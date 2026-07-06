@@ -38,12 +38,16 @@ console.log("\n[2/5] Checking dependencies...");
 function checkNodeModules(dir, label) {
   const modulesPath = path.join(dir, "node_modules");
   if (!fs.existsSync(modulesPath)) {
-    console.log(`  🔍  node_modules missing in ${label}. Installing...`);
+    console.log(`  🔍  node_modules missing in ${label}. Installing dependencies (this may take a minute)...`);
     try {
-      execSync("npm install", { cwd: dir, stdio: "inherit" });
-      console.log(`  ✔️  Installed ${label} dependencies.`);
+      execSync("npm install", { cwd: dir, stdio: "ignore" });
+      console.log(`  ✔️  Successfully installed ${label} dependencies.`);
     } catch (err) {
-      console.error(`  ❌  Failed to install dependencies in ${label}:`, err.message);
+      console.log(`  ⚠️  Automated npm install failed in '${label}'.`);
+      console.log(`      This is typically due to local network connectivity or proxy issues (e.g. ECONNRESET).`);
+      console.log(`      To fix this, please run manually:`);
+      console.log(`        cd ${label}`);
+      console.log(`        npm install`);
     }
   } else {
     console.log(`  ✔️  ${label} dependencies already installed.`);

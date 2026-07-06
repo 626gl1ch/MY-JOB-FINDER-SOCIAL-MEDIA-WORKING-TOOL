@@ -76,6 +76,18 @@ To run the backend silently in the background on your PC without leaving termina
 
 ## 4. Diagnostics & Troubleshooting
 
+* **NPM Package Installation Fails (e.g. ECONNRESET or Network Timeout)**:
+  - If `node setup.js` outputs a warning that the automated npm install failed, it is typically due to local network instability or proxy restrictions.
+  - To troubleshoot, try running these commands manually:
+    ```bash
+    cd backend
+    npm cache clean --force
+    npm install
+    ```
+  - If you are behind a corporate or private network proxy, configure npm to use your proxy endpoint:
+    ```bash
+    npm config set proxy http://your-proxy-server-ip:port
+    ```
 * **Vite Webapp Loads, but displays "API Latency: Offline"**:
   - The React app is running in **Demo Mode**. Check that the backend server is running on `http://localhost:8787` and that no other application is blocking port 8787.
 * **Puppeteer Browser Closes Instantly during Assisted posting**:
