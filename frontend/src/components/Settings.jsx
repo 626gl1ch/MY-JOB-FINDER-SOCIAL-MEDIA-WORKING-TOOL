@@ -12,7 +12,8 @@ import {
   AlertTriangle,
   HelpCircle,
   Terminal,
-  Info
+  Info,
+  ShieldAlert
 } from "lucide-react";
 
 const CONNECTIONS = [
@@ -26,6 +27,16 @@ const CONNECTIONS = [
 export default function Settings() {
   const [testing, setTesting] = useState(false);
   const [testResults, setTestResults] = useState(null);
+  const [backendUrl, setBackendUrl] = useState(() => localStorage.getItem("backendUrl") || "");
+
+  const saveBackendUrl = () => {
+    if (backendUrl) {
+      localStorage.setItem("backendUrl", backendUrl);
+    } else {
+      localStorage.removeItem("backendUrl");
+    }
+    window.location.reload();
+  };
 
   const runConnectionTests = () => {
     setTesting(true);
@@ -69,6 +80,43 @@ export default function Settings() {
         >
           {testing ? <RefreshCw size={13} className="animate-spin" /> : <RefreshCw size={13} />}
           <span>{testing ? "Testing connections..." : "Test Environment Keys"}</span>
+        </button>
+      </div>
+
+      <div className="mb-8 glass-panel rounded-2xl p-4 border border-white/5 flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div className="flex-1">
+          <h3 className="text-xs font-semibold text-white uppercase tracking-wider font-mono mb-2">Mobile Backend URL (ngrok)</h3>
+          <input 
+            type="text" 
+            value={backendUrl}
+            onChange={(e) => setBackendUrl(e.target.value)}
+            placeholder="e.g. https://xxxx.ngrok-free.app/api"
+            className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-2.5 text-white text-xs font-mono placeholder:text-white/20 outline-none focus:border-[#43FFB0]/50 transition-colors"
+          />
+        </div>
+        <button
+          onClick={saveBackendUrl}
+          className="flex items-center gap-1.5 text-xs font-semibold text-[#8B7CFF] bg-[#8B7CFF]/10 px-4 py-2.5 rounded-xl border border-[#8B7CFF]/20 hover:bg-[#8B7CFF]/20 transition-all shrink-0 hover:scale-[1.02] active:scale-[0.98]"
+        >
+          <CheckCircle2 size={13} />
+          <span>Save & Reload</span>
+        </button>
+      </div>
+
+      <div className="mb-8 p-4 rounded-xl border border-[#FFac0a]/20 bg-[#FFac0a]/5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h3 className="text-xs font-semibold text-[#FFac0a] uppercase tracking-wider font-mono mb-1">Legal Agreements</h3>
+          <p className="text-xs text-[#8B93A7]">Reset your agreement to the Glitch EnterPrice Terms and Conditions. This will force the prompt to reappear on reload.</p>
+        </div>
+        <button
+          onClick={() => {
+            localStorage.removeItem("glitch_terms_agreed");
+            window.location.reload();
+          }}
+          className="flex items-center gap-1.5 text-xs font-semibold text-[#FFac0a] bg-[#FFac0a]/10 px-4 py-2.5 rounded-xl border border-[#FFac0a]/20 hover:bg-[#FFac0a]/20 transition-all shrink-0"
+        >
+          <ShieldAlert size={13} />
+          <span>Reset Terms Agreement</span>
         </button>
       </div>
 

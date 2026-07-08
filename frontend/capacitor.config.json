@@ -1,0 +1,9 @@
+{
+  "appId": "com.glitchenterprice.broadcast",
+  "appName": "Glitch Broadcast",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https",
+    "cleartext": true
+  }
+}

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import Sidebar from "./components/Sidebar";
+import MobileNav from "./components/MobileNav";
+import TermsModal from "./components/TermsModal";
 import Dashboard from "./components/Dashboard";
 import ChatPanel from "./components/ChatPanel";
 import ContentVault from "./components/ContentVault";
@@ -23,11 +25,13 @@ export default function App() {
   const View = VIEWS[active];
 
   return (
-    <div className="flex h-screen bg-base overflow-hidden">
+    <div className="flex h-screen bg-base overflow-hidden relative">
+      <TermsModal />
       <Sidebar active={active} onChange={setActive} />
-      <main className="flex-1 overflow-y-auto scrollbar-thin">
+      <main className="flex-1 overflow-y-auto scrollbar-thin pb-16 md:pb-0">
         <View />
       </main>
+      <MobileNav active={active} onChange={setActive} />
     </div>
   );
 }

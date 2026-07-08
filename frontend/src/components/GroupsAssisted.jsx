@@ -24,6 +24,7 @@ const STATUS_CONFIG = {
 export default function GroupsAssisted() {
   const [queue, setQueue] = useState([]);
   const [runningId, setRunningId] = useState(null);
+  const isMobileApp = typeof window !== 'undefined' && !!window.Capacitor;
   const [terminalLogs, setTerminalLogs] = useState([
     "[SYSTEM] Terminal ready. Awaiting queue command...",
     "[SYSTEM] Click 'Open & fill composer' to launch Chromium script."
@@ -136,6 +137,16 @@ export default function GroupsAssisted() {
         </p>
       </div>
 
+      {isMobileApp && (
+        <div className="mb-8 p-4 rounded-xl bg-[#FFac0a]/10 border border-[#FFac0a]/20 text-[#FFac0a] text-sm flex gap-3 items-start">
+          <AlertTriangle size={18} className="shrink-0 mt-0.5" />
+          <div>
+            <p className="font-semibold mb-1">Desktop Only Feature</p>
+            <p className="text-xs opacity-90">Meta prevents auto-posting to groups. This feature launches a visible Chrome browser to autofill your post for manual review. It only works when running the web dashboard on your desktop PC where the backend is hosted.</p>
+          </div>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
         
         {/* Left: Queue List */}
@@ -180,11 +191,15 @@ export default function GroupsAssisted() {
                       {item.status === "queued" && (
                         <button
                           onClick={() => run(item.id, item)}
-                          disabled={runningId !== null}
-                          className="flex items-center gap-1.5 text-xs font-semibold text-[#43FFB0] bg-[#43FFB0]/10 px-3.5 py-1.5 rounded-xl border border-[#43FFB0]/20 hover:bg-[#43FFB0]/20 transition-colors disabled:opacity-40"
+                          disabled={runningId !== null || isMobileApp}
+                          className={`flex items-center gap-1.5 text-xs font-semibold px-3.5 py-1.5 rounded-xl border transition-colors ${
+                            isMobileApp 
+                              ? "text-[#8B93A7] bg-white/5 border-white/10 opacity-50 cursor-not-allowed" 
+                              : "text-[#43FFB0] bg-[#43FFB0]/10 border-[#43FFB0]/20 hover:bg-[#43FFB0]/20 disabled:opacity-40"
+                          }`}
                         >
                           {isRunning ? <RefreshCw size={12} className="animate-spin" /> : <PlayCircle size={13} />}
-                          <span>{isRunning ? "Running script..." : "Open & autofill"}</span>
+                          <span>{isMobileApp ? "Desktop Only" : (isRunning ? "Running script..." : "Open & autofill")}</span>
                         </button>
                       )}
 

@@ -13,7 +13,7 @@ const { startScheduler } = require("./services/scheduler");
 
 const app = express();
 
-app.use(cors({ origin: process.env.FRONTEND_ORIGIN || "*" }));
+app.use(cors({ origin: "*" }));
 app.use(express.json({ limit: "10mb" }));
 app.use(fileUpload());
 

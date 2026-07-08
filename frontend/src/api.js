@@ -1,6 +1,9 @@
-const BASE = import.meta.env.VITE_API_URL || "http://localhost:8787/api";
+const getBaseUrl = () => {
+  return localStorage.getItem("backendUrl") || import.meta.env.VITE_API_URL || "http://localhost:8787/api";
+};
 
 async function req(path, options = {}) {
+  const BASE = getBaseUrl();
   const res = await fetch(`${BASE}${path}`, {
     headers: { "Content-Type": "application/json" },
     ...options,

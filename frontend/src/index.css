@@ -180,3 +180,23 @@ body {
     animation: none !important;
   }
 }
+
+/* ---- Mobile Safe Area & Touch Optimizations ---- */
+body {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+button, a {
+  touch-action: manipulation; /* Disable double-tap to zoom for snappier clicks */
+}
+
+input, textarea, select {
+  font-size: 16px; /* Prevents iOS/Android auto-zoom on focus */
+}
+
+.overflow-y-auto, .overflow-x-auto {
+  -webkit-overflow-scrolling: touch; /* Smooth momentum scrolling */
+}

@@ -47,7 +47,7 @@ export default function Sidebar({ active, onChange }) {
   }, []);
 
   return (
-    <aside className="w-64 shrink-0 bg-[#0A0D15]/80 border-r border-white/5 backdrop-blur-2xl flex flex-col relative z-10">
+    <aside className="hidden md:flex w-64 shrink-0 bg-[#0A0D15]/80 border-r border-white/5 backdrop-blur-2xl flex-col relative z-10">
       {/* Glow highlight inside sidebar */}
       <div className="absolute top-0 right-0 w-[1px] h-32 bg-gradient-to-b from-[#8B7CFF]/30 to-transparent" />
       
