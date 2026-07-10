@@ -24,3 +24,8 @@ dist/
 build/
 .next/
 out/
+
+# Android SDKs and toolchains
+.android-sdk/
+.jdk/
+.jdk21/

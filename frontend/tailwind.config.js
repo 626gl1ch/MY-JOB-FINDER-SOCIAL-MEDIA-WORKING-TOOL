@@ -4,19 +4,19 @@ export default {
   theme: {
     extend: {
       colors: {
-        base: "#0B0E14",
-        surface: "#131722",
-        surface2: "#1A1F2E",
-        surface3: "#20263A",
-        hairline: "rgba(228,231,236,0.08)",
-        ink: "#E4E7EC",
-        muted: "#8B93A7",
-        dim: "#5C6478",
-        signal: "#43FFB0",
-        signalDim: "#1F5C46",
-        pulse: "#8B7CFF",
-        pulseDim: "#332A66",
-        alert: "#FF5C7A",
+        base: "#05050A",
+        surface: "#0A0A14",
+        surface2: "#10101F",
+        surface3: "#18182B",
+        hairline: "rgba(255,255,255,0.06)",
+        ink: "#F8F9FA",
+        muted: "#A1A1AA",
+        dim: "#52525B",
+        signal: "#00E5FF", // Neon Cyan
+        signalDim: "#00333D",
+        pulse: "#D900FF", // Electric Violet
+        pulseDim: "#33003D",
+        alert: "#FF2A5F",
       },
       fontFamily: {
         display: ["'Space Grotesk'", "sans-serif"],
@@ -24,12 +24,12 @@ export default {
         mono: ["'JetBrains Mono'", "monospace"],
       },
       backgroundImage: {
-        "glow-signal": "radial-gradient(circle, rgba(67,255,176,0.35) 0%, rgba(67,255,176,0) 70%)",
-        "glow-pulse": "radial-gradient(circle, rgba(139,124,255,0.35) 0%, rgba(139,124,255,0) 70%)",
-        "channel-split": "linear-gradient(90deg, #43FFB0 0%, #8B7CFF 100%)",
+        "glow-signal": "radial-gradient(circle, rgba(0,229,255,0.25) 0%, rgba(0,229,255,0) 70%)",
+        "glow-pulse": "radial-gradient(circle, rgba(217,0,255,0.25) 0%, rgba(217,0,255,0) 70%)",
+        "channel-split": "linear-gradient(90deg, #00E5FF 0%, #D900FF 100%)",
       },
       boxShadow: {
-        glass: "inset 0 1px 0 0 rgba(255,255,255,0.04)",
+        glass: "inset 0 1px 0 0 rgba(255,255,255,0.05)",
       },
     },
   },

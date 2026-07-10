@@ -20,7 +20,7 @@ const PLATFORM_ICONS = {
   facebook_page: { icon: Facebook, color: "text-[#1877F2]", bg: "bg-[#1877F2]/10", border: "border-[#1877F2]/20" },
   instagram: { icon: Instagram, color: "text-[#E1306C]", bg: "bg-[#E1306C]/10", border: "border-[#E1306C]/20" },
   linkedin: { icon: Linkedin, color: "text-[#0A66C2]", bg: "bg-[#0A66C2]/10", border: "border-[#0A66C2]/20" },
-  facebook_group: { icon: Users, color: "text-[#43FFB0]", bg: "bg-[#43FFB0]/10", border: "border-[#43FFB0]/20" },
+  facebook_group: { icon: Users, color: "text-[#00E5FF]", bg: "bg-[#00E5FF]/10", border: "border-[#00E5FF]/20" },
 };
 
 export default function Scheduler() {
@@ -70,48 +70,49 @@ export default function Scheduler() {
   };
 
   return (
-    <div className="p-8 relative min-h-screen">
+    <div className="p-6 md:p-10 relative min-h-screen">
       {/* Background glow */}
-      <div className="glow-blob w-[500px] h-[500px] bg-[#8B7CFF]/3 -bottom-20 -left-10 opacity-50" />
+      <div className="glow-blob w-[600px] h-[600px] bg-[#D900FF]/10 -bottom-20 -left-10 opacity-40" />
+      <div className="glow-blob w-[400px] h-[400px] bg-[#00E5FF]/5 top-20 right-0 opacity-40" />
 
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10 max-w-7xl mx-auto relative z-10">
         <div>
-          <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-[#8B7CFF]">
-            <CalendarClock size={12} className="text-[#8B7CFF]" /> Calendar Planner
+          <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-[#D900FF]">
+            <CalendarClock size={14} className="text-[#D900FF] drop-shadow-[0_0_8px_rgba(217,0,255,0.8)]" /> Calendar Planner
           </div>
-          <h1 className="font-display text-2xl font-bold tracking-tight text-white mt-1.5">
+          <h1 className="font-display text-4xl font-bold tracking-tight text-white mt-2">
             Scheduler
           </h1>
-          <p className="text-[#8B93A7] text-xs mt-0.5">
+          <p className="text-[#A1A1AA] text-[13px] mt-1.5 font-light">
             View, reschedule, and delete automatically queued platform broadcasts.
           </p>
         </div>
 
         {/* Date navigations */}
-        <div className="flex items-center gap-3 shrink-0">
-          <div className="flex items-center gap-1 bg-[#090C12] border border-white/5 rounded-xl p-1">
+        <div className="flex items-center gap-4 shrink-0">
+          <div className="flex items-center gap-2 bg-[#05050A]/80 border border-white/5 rounded-2xl p-1.5 shadow-inner backdrop-blur-md">
             <button 
               onClick={() => setActiveWeekOffset(o => o - 1)}
-              className="p-1.5 rounded-lg hover:bg-white/5 text-[#8B93A7] hover:text-white transition-colors"
+              className="p-2 rounded-xl hover:bg-white/10 text-[#A1A1AA] hover:text-white transition-all duration-300"
             >
-              <ChevronLeft size={14} />
+              <ChevronLeft size={16} />
             </button>
-            <span className="text-[11px] font-mono font-medium px-2 text-[#E4E7EC] min-w-[150px] text-center select-none">
+            <span className="text-[12px] font-mono font-medium px-3 text-[#E4E7EC] min-w-[160px] text-center select-none tracking-wide">
               {getWeekRangeLabel()}
             </span>
             <button 
               onClick={() => setActiveWeekOffset(o => o + 1)}
-              className="p-1.5 rounded-lg hover:bg-white/5 text-[#8B93A7] hover:text-white transition-colors"
+              className="p-2 rounded-xl hover:bg-white/10 text-[#A1A1AA] hover:text-white transition-all duration-300"
             >
-              <ChevronRight size={14} />
+              <ChevronRight size={16} />
             </button>
           </div>
         </div>
       </div>
 
       {/* Weekly Grid Columns */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-4 relative z-10">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-5 relative z-10">
         {DAYS_OF_WEEK.map((day) => {
           const events = getEventsByDay(day);
           const isToday = new Date().toLocaleDateString("en-US", { weekday: "long" }) === day && activeWeekOffset === 0;
@@ -119,50 +120,53 @@ export default function Scheduler() {
           return (
             <div 
               key={day} 
-              className={`glass-panel rounded-2xl p-4 flex flex-col gap-3 min-h-[300px] border transition-colors ${
-                isToday ? "border-[#43FFB0]/20 bg-[#43FFB0]/[0.01]" : "border-white/5"
+              className={`glass-panel rounded-3xl p-5 flex flex-col gap-4 min-h-[350px] border transition-all duration-500 ${
+                isToday ? "border-[#00E5FF]/30 bg-[#00E5FF]/[0.02] shadow-[0_0_20px_rgba(0,229,255,0.05)]" : "border-white/5"
               }`}
             >
               {/* Day Header */}
-              <div className="flex items-center justify-between border-b border-white/5 pb-2">
-                <span className={`text-xs font-semibold ${isToday ? "text-[#43FFB0]" : "text-white"}`}>
+              <div className="flex items-center justify-between border-b border-white/5 pb-3">
+                <span className={`text-[13px] font-bold tracking-wide uppercase ${isToday ? "text-[#00E5FF]" : "text-white/80"}`}>
                   {day.slice(0, 3)}
                 </span>
                 {isToday && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#43FFB0] pulse-dot" />
+                  <span className="w-2 h-2 rounded-full bg-[#00E5FF] pulse-dot shadow-[0_0_8px_rgba(0,229,255,0.8)]" />
                 )}
               </div>
 
               {/* Day Events */}
-              <div className="space-y-2 flex-1 overflow-y-auto scrollbar-none">
+              <div className="space-y-3 flex-1 overflow-y-auto scrollbar-none">
                 {events.map((event) => (
                   <div
                     key={event.id}
                     onClick={() => setSelectedEvent(event)}
-                    className="p-3 rounded-xl bg-white/[0.02] border border-white/5 hover:border-[#8B7CFF]/30 cursor-pointer transition-all duration-200 hover:scale-[1.02] space-y-2.5"
+                    className="p-4 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-[#D900FF]/40 cursor-pointer transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_0_15px_rgba(217,0,255,0.15)] space-y-3 relative overflow-hidden group"
                   >
-                    <div className="flex items-center justify-between">
-                      <span className="text-[9px] font-mono text-[#5C6478]">
+                    <div className="absolute top-0 right-0 w-12 h-12 bg-gradient-to-bl from-white/[0.05] to-transparent rounded-bl-3xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="flex items-center justify-between relative z-10">
+                      <span className="text-[10px] font-mono text-[#A1A1AA] bg-black/40 px-2 py-0.5 rounded shadow-inner">
                         {new Date(event.scheduled_for).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </span>
-                      <div className="flex gap-1">
+                      <div className="flex gap-1.5">
                         {event.post_variants?.map((v) => {
-                          const meta = PLATFORM_ICONS[v.platform] || { icon: Users, color: "text-[#8B93A7]" };
+                          const meta = PLATFORM_ICONS[v.platform] || { icon: Users, color: "text-[#A1A1AA]" };
                           const Icon = meta.icon;
                           return (
-                            <Icon key={v.id} size={10} className={meta.color} />
+                            <div key={v.id} className="p-1 rounded bg-black/40 shadow-inner">
+                              <Icon size={10} className={meta.color} />
+                            </div>
                           );
                         })}
                       </div>
                     </div>
-                    <p className="text-[10px] text-[#8B93A7] leading-normal line-clamp-3">
+                    <p className="text-[11px] text-[#A1A1AA] group-hover:text-white transition-colors leading-relaxed line-clamp-3 relative z-10">
                       {event.base_content}
                     </p>
                   </div>
                 ))}
                 
                 {events.length === 0 && (
-                  <div className="h-full flex items-center justify-center py-10 text-[9px] font-mono text-[#5C6478] uppercase tracking-wider text-center">
+                  <div className="h-full flex items-center justify-center py-12 text-[10px] font-mono text-[#52525B] uppercase tracking-wider text-center border border-dashed border-white/5 rounded-2xl bg-white/[0.01]">
                     empty slot
                   </div>
                 )}
@@ -174,47 +178,49 @@ export default function Scheduler() {
 
       {/* Selected Event Detail Modal */}
       {selectedEvent && (
-        <div className="fixed inset-0 bg-[#06080C]/85 backdrop-blur-md flex items-center justify-center p-4 z-50">
-          <div className="glass-panel max-w-lg w-full rounded-2xl p-6 space-y-5 border border-white/10 shadow-2xl relative">
-            <div className="flex items-center justify-between border-b border-white/5 pb-3">
-              <h3 className="text-sm font-semibold text-white font-mono uppercase flex items-center gap-2">
-                <Clock size={14} className="text-[#8B7CFF]" /> Broadcast Details
+        <div className="fixed inset-0 bg-[#05050A]/80 backdrop-blur-xl flex items-center justify-center p-6 z-50 animate-fade-in">
+          <div className="glass-panel max-w-xl w-full rounded-3xl p-8 space-y-6 border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)] relative">
+            <div className="flex items-center justify-between border-b border-white/5 pb-4">
+              <h3 className="text-base font-semibold text-white font-mono uppercase flex items-center gap-3">
+                <Clock size={16} className="text-[#D900FF] drop-shadow-[0_0_8px_rgba(217,0,255,0.8)]" /> Broadcast Details
               </h3>
               <button 
                 onClick={() => setSelectedEvent(null)}
-                className="text-[#8B93A7] hover:text-white text-xs"
+                className="text-[#A1A1AA] hover:text-white text-xs bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-lg transition-all"
               >
                 ✕ Close
               </button>
             </div>
 
-            <div className="space-y-1">
-              <p className="text-[9px] font-mono text-[#5C6478] uppercase">Scheduled Time</p>
-              <p className="text-xs text-white font-mono">
+            <div className="space-y-1.5">
+              <p className="text-[10px] font-mono text-[#52525B] uppercase tracking-wider">Scheduled Time</p>
+              <p className="text-[13px] text-white font-mono bg-[#05050A]/40 px-4 py-2 rounded-xl border border-white/5 inline-block">
                 {new Date(selectedEvent.scheduled_for).toLocaleString()}
               </p>
             </div>
 
-            <div className="space-y-1">
-              <p className="text-[9px] font-mono text-[#5C6478] uppercase">Base Content</p>
-              <p className="text-xs text-[#8B93A7] leading-relaxed bg-[#090C12]/50 p-3 rounded-xl border border-white/5 whitespace-pre-wrap">
+            <div className="space-y-1.5">
+              <p className="text-[10px] font-mono text-[#52525B] uppercase tracking-wider">Base Content</p>
+              <p className="text-[13px] text-[#A1A1AA] leading-relaxed bg-[#05050A]/60 p-4 rounded-2xl border border-white/5 whitespace-pre-wrap shadow-inner font-mono">
                 {selectedEvent.base_content}
               </p>
             </div>
 
             <div className="space-y-3">
-              <p className="text-[9px] font-mono text-[#5C6478] uppercase">Distribution Targets</p>
-              <div className="space-y-2">
+              <p className="text-[10px] font-mono text-[#52525B] uppercase tracking-wider">Distribution Targets</p>
+              <div className="grid grid-cols-2 gap-3">
                 {selectedEvent.post_variants?.map((v) => {
-                  const meta = PLATFORM_ICONS[v.platform] || { icon: Users, color: "text-[#8B93A7]", bg: "bg-white/5", border: "border-white/5" };
+                  const meta = PLATFORM_ICONS[v.platform] || { icon: Users, color: "text-[#A1A1AA]", bg: "bg-white/5", border: "border-white/5" };
                   const Icon = meta.icon;
                   return (
-                    <div key={v.id} className="flex items-center justify-between p-2.5 rounded-lg bg-white/[0.01] border border-white/5 text-[11px]">
-                      <div className="flex items-center gap-2">
-                        <Icon size={12} className={meta.color} />
-                        <span className="capitalize text-white font-mono">{v.platform.replace("_", " ")}</span>
+                    <div key={v.id} className="flex items-center justify-between p-3 rounded-xl bg-white/[0.02] border border-white/5 text-[11px] hover:border-white/10 transition-colors">
+                      <div className="flex items-center gap-2.5">
+                        <div className={`p-1.5 rounded-lg bg-black/40 shadow-inner`}>
+                          <Icon size={14} className={meta.color} />
+                        </div>
+                        <span className="capitalize text-white font-mono tracking-wide">{v.platform.replace("_", " ")}</span>
                       </div>
-                      <span className="text-[9px] font-mono text-[#43FFB0] bg-[#43FFB0]/10 px-1.5 py-0.5 rounded border border-[#43FFB0]/15">
+                      <span className="text-[9px] font-mono text-[#00E5FF] bg-[#00E5FF]/10 px-2 py-0.5 rounded border border-[#00E5FF]/20 shadow-sm">
                         ready
                       </span>
                     </div>
@@ -224,21 +230,21 @@ export default function Scheduler() {
             </div>
 
             {/* Modal Actions */}
-            <div className="flex items-center justify-between pt-3 border-t border-white/5">
+            <div className="flex items-center justify-between pt-5 border-t border-white/5">
               <button
                 onClick={() => deleteSchedule(selectedEvent.id)}
-                className="flex items-center gap-1 text-xs font-semibold text-[#FF5C7A]"
+                className="flex items-center gap-1.5 text-[11px] font-mono text-[#FF2A5F] hover:bg-[#FF2A5F]/10 px-4 py-2 rounded-xl transition-colors border border-transparent hover:border-[#FF2A5F]/20"
               >
-                <Trash2 size={13} /> Unschedule
+                <Trash2 size={14} /> Unschedule
               </button>
               <button
                 onClick={() => {
                   alert("Signal broadcasted instantly!");
                   deleteSchedule(selectedEvent.id);
                 }}
-                className="flex items-center gap-1 text-xs font-semibold text-[#43FFB0]"
+                className="flex items-center gap-2 text-[12px] font-bold text-[#05050A] bg-gradient-to-r from-[#00E5FF] to-[#D900FF] px-6 py-2.5 rounded-xl hover:shadow-[0_0_15px_rgba(0,229,255,0.4)] transition-all hover:scale-[1.02] active:scale-95"
               >
-                <Send size={13} /> Force Broadcast Now
+                <Send size={14} /> Force Broadcast Now
               </button>
             </div>
 

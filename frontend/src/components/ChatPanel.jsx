@@ -62,18 +62,18 @@ export default function ChatPanel() {
   return (
     <div className="flex flex-col h-full relative">
       {/* Ambient gradient */}
-      <div className="glow-blob w-[400px] h-[400px] bg-[#8B7CFF]/5 top-0 left-10 opacity-60" />
+      <div className="glow-blob w-[500px] h-[500px] bg-[#D900FF]/10 top-0 left-0 opacity-50" />
 
       {/* Header */}
-      <div className="px-8 py-6 border-b border-white/5 relative z-10 flex items-center justify-between">
+      <div className="px-8 py-6 border-b border-white/5 relative z-10 flex items-center justify-between bg-black/20 backdrop-blur-sm">
         <div>
-          <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-[#8B7CFF]">
-            <Sparkles size={12} className="text-[#8B7CFF]" /> AI Assistant
+          <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-[#D900FF]">
+            <Sparkles size={14} className="text-[#D900FF] pulse-dot drop-shadow-[0_0_8px_rgba(217,0,255,0.8)]" /> AI Assistant
           </div>
-          <h1 className="font-display text-2xl font-bold tracking-tight text-white mt-1.5">
+          <h1 className="font-display text-3xl font-bold tracking-tight text-white mt-2">
             Talk to Gemini Brain
           </h1>
-          <p className="text-[#8B93A7] text-xs mt-0.5">
+          <p className="text-[#A1A1AA] text-[13px] mt-1 font-light">
             Brainstorm tech topics, refine platform captions, or adapt logs into updates.
           </p>
         </div>
@@ -82,30 +82,30 @@ export default function ChatPanel() {
       {/* Conversation Thread */}
       <div className="flex-1 overflow-y-auto scrollbar-thin px-8 py-6 space-y-6 relative z-10">
         {messages.length === 0 && (
-          <div className="max-w-2xl mx-auto space-y-8 pt-10">
-            <div className="text-center space-y-2">
-              <div className="inline-flex p-3.5 rounded-2xl bg-white/[0.02] border border-white/5 text-[#8B7CFF]">
-                <Sparkles size={24} />
+          <div className="max-w-3xl mx-auto space-y-10 pt-12">
+            <div className="text-center space-y-3">
+              <div className="inline-flex p-4 rounded-2xl bg-[#D900FF]/10 border border-[#D900FF]/20 text-[#D900FF] shadow-[0_0_15px_rgba(217,0,255,0.3)]">
+                <Sparkles size={28} />
               </div>
-              <h2 className="text-lg font-display font-semibold text-white">What are we building today?</h2>
-              <p className="text-xs text-[#8B93A7] max-w-sm mx-auto">
+              <h2 className="text-2xl font-display font-semibold text-white">What are we building today?</h2>
+              <p className="text-[13px] text-[#A1A1AA] max-w-sm mx-auto leading-relaxed">
                 Ask Gemini to draft specific variants, write alt text, or brainstorm algo-trading logs.
               </p>
             </div>
 
             {/* Quick Actions Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {SUGGESTIONS.map((s, idx) => (
                 <div 
                   key={idx}
                   onClick={() => handleSuggestionClick(s.prompt)}
-                  className="glass-panel rounded-xl p-4 cursor-pointer hover:border-[#8B7CFF]/30 hover:bg-[#121622]/40 transition-all duration-300 group flex flex-col justify-between"
+                  className="glass-panel rounded-2xl p-5 cursor-pointer hover:border-[#D900FF]/30 hover:bg-[#D900FF]/[0.02] hover:shadow-[0_0_15px_rgba(217,0,255,0.1)] transition-all duration-300 group flex flex-col justify-between"
                 >
-                  <p className="text-xs font-semibold text-[#E4E7EC] group-hover:text-white leading-relaxed">
+                  <p className="text-[13px] font-medium text-[#E4E7EC] group-hover:text-white leading-relaxed">
                     {s.label}
                   </p>
-                  <div className="flex items-center gap-1 text-[10px] font-mono text-[#8B7CFF] mt-3 group-hover:translate-x-1 transition-transform">
-                    Send prompt <ArrowRight size={10} />
+                  <div className="flex items-center gap-1.5 text-[11px] font-mono text-[#D900FF] mt-4 group-hover:translate-x-1.5 transition-transform">
+                    Send prompt <ArrowRight size={12} />
                   </div>
                 </div>
               ))}
@@ -116,10 +116,10 @@ export default function ChatPanel() {
         {messages.map((m, i) => (
           <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
             <div
-              className={`max-w-[75%] rounded-2xl px-5 py-3.5 text-xs leading-relaxed shadow-lg ${
+              className={`max-w-[75%] rounded-2xl px-6 py-4 text-[13px] leading-relaxed shadow-lg ${
                 m.role === "user"
-                  ? "bg-gradient-to-tr from-[#43FFB0] to-[#8B7CFF] text-[#06080C] font-semibold border border-white/10"
-                  : "glass-panel text-[#E4E7EC] font-mono border border-white/5 whitespace-pre-wrap"
+                  ? "bg-gradient-to-tr from-[#00E5FF] to-[#D900FF] text-black font-semibold border border-white/10"
+                  : "glass-panel text-[#E4E7EC] font-mono border border-white/5 whitespace-pre-wrap drop-shadow-md"
               }`}
             >
               {m.content}
@@ -129,11 +129,11 @@ export default function ChatPanel() {
 
         {loading && (
           <div className="flex justify-start">
-            <div className="glass-panel rounded-2xl px-5 py-3.5 flex items-center gap-2 border border-white/5">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#8B7CFF] animate-bounce" style={{ animationDelay: "0ms" }} />
-              <span className="w-1.5 h-1.5 rounded-full bg-[#8B7CFF] animate-bounce" style={{ animationDelay: "150ms" }} />
-              <span className="w-1.5 h-1.5 rounded-full bg-[#8B7CFF] animate-bounce" style={{ animationDelay: "300ms" }} />
-              <span className="text-[10px] font-mono text-[#5C6478] ml-2">Gemini is writing...</span>
+            <div className="glass-panel rounded-2xl px-6 py-4 flex items-center gap-2 border border-white/5 shadow-md">
+              <span className="w-2 h-2 rounded-full bg-[#D900FF] animate-bounce shadow-[0_0_8px_rgba(217,0,255,0.8)]" style={{ animationDelay: "0ms" }} />
+              <span className="w-2 h-2 rounded-full bg-[#D900FF] animate-bounce shadow-[0_0_8px_rgba(217,0,255,0.8)]" style={{ animationDelay: "150ms" }} />
+              <span className="w-2 h-2 rounded-full bg-[#D900FF] animate-bounce shadow-[0_0_8px_rgba(217,0,255,0.8)]" style={{ animationDelay: "300ms" }} />
+              <span className="text-[11px] font-mono text-[#A1A1AA] ml-3">Gemini is thinking...</span>
             </div>
           </div>
         )}
@@ -141,21 +141,21 @@ export default function ChatPanel() {
       </div>
 
       {/* Input Tray */}
-      <div className="px-8 py-5 border-t border-white/5 relative z-10 bg-[#06080C]/80 backdrop-blur-md">
-        <div className="max-w-4xl mx-auto flex items-center gap-3 bg-white/[0.02] border border-white/5 rounded-2xl px-4 py-3 focus-within:border-[#8B7CFF]/30 transition-all duration-200">
+      <div className="px-8 py-6 border-t border-white/5 relative z-10 bg-[#05050A]/80 backdrop-blur-xl">
+        <div className="max-w-5xl mx-auto flex items-center gap-4 bg-white/[0.02] border border-white/5 rounded-2xl p-2 pl-6 focus-within:border-[#D900FF]/40 focus-within:bg-white/[0.04] focus-within:shadow-[0_0_15px_rgba(217,0,255,0.1)] transition-all duration-300">
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && send()}
             placeholder="Type your content prompt here..."
-            className="flex-1 bg-transparent outline-none text-xs placeholder:text-[#5C6478] text-white"
+            className="flex-1 bg-transparent outline-none text-[13px] placeholder:text-[#52525B] text-white py-2"
           />
           <button 
             onClick={() => send()} 
-            className="p-2 rounded-xl bg-white/[0.04] border border-white/5 text-[#8B7CFF] hover:text-white hover:bg-[#8B7CFF] hover:border-[#8B7CFF] transition-all disabled:opacity-30 disabled:hover:bg-white/[0.04] disabled:hover:text-[#8B7CFF]" 
+            className="p-3 rounded-xl bg-gradient-to-tr from-[#00E5FF]/10 to-[#D900FF]/10 border border-white/5 text-white hover:border-[#D900FF]/30 hover:shadow-[0_0_15px_rgba(217,0,255,0.3)] transition-all duration-300 disabled:opacity-30 disabled:hover:border-white/5 disabled:hover:shadow-none" 
             disabled={loading || !input.trim()}
           >
-            <Send size={14} />
+            <Send size={18} className="text-white drop-shadow-md" />
           </button>
         </div>
       </div>

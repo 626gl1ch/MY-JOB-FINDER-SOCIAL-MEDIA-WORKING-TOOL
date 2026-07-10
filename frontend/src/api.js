@@ -42,9 +42,29 @@ export const api = {
   // Files
   listFiles: (folder) => req(`/files${folder ? `?folder=${folder}` : ""}`),
   deleteFile: (id) => req(`/files/${id}`, { method: "DELETE" }),
+  uploadFile: async (file, folder = "general") => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("folder", folder);
+    const BASE = getBaseUrl();
+    const res = await fetch(`${BASE}/files/upload`, {
+      method: "POST",
+      body: formData,
+    });
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      throw new Error(body.error || `Upload failed: ${res.status}`);
+    }
+    return res.json();
+  },
 
   // Schedule
   schedulePost: (postId, scheduledFor) =>
     req(`/schedule/${postId}`, { method: "POST", body: JSON.stringify({ scheduledFor }) }),
   getCalendar: (from, to) => req(`/schedule/calendar?from=${from || ""}&to=${to || ""}`),
+
+  // Settings
+  getSettingsEnv: () => req("/settings/env"),
+  updateSettingsEnv: (payload) =>
+    req("/settings/env", { method: "POST", body: JSON.stringify(payload) }),
 };

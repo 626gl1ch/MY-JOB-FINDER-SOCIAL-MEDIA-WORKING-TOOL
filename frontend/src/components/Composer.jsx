@@ -71,10 +71,12 @@ export default function Composer() {
           }, 1800);
         });
       });
-      
       setVariants(result.variants);
     } catch (err) {
-      alert(`Generation failed: ${err.message}`);
+      console.warn("Gemini API failed, using local mock generator fallback:", err.message);
+      alert(`Warning: Gemini API offline or invalid key (${err.message}). Using offline mock generator fallback.`);
+      const mockVariants = generateMockVariants(baseContent, selectedPlatforms, brandVoice);
+      setVariants(mockVariants);
     } finally {
       setGenerating(false);
     }
@@ -102,14 +104,14 @@ export default function Composer() {
     try {
       if (variant.platform === "facebook_group") {
         if (!groupUrl.trim()) return alert("Please specify the target Facebook Group URL first.");
-        await api.queueGroupPost(variant.id, groupUrl).catch(() => {});
+        await api.queueGroupPost(variant.id, groupUrl);
         alert("Variant successfully queued for Puppeteer assisted posting. Open the Groups tab to run it!");
       } else {
-        await api.publishVariant(variant.id, attachedImage?.url).catch(() => {});
-        alert(`Published to ${variant.platform}! (Simulated response logged in feed)`);
+        await api.publishVariant(variant.id, attachedImage?.url);
+        alert(`Successfully published to ${variant.platform}!`);
       }
     } catch (err) {
-      alert(`Publish error: ${err.message}`);
+      alert(`Publish failed: ${err.message}`);
     }
   };
 
@@ -125,29 +127,41 @@ export default function Composer() {
     }
   };
 
-  const simulateAttachImage = () => {
-    // Simulates choosing an image from the content vault
-    setAttachedImage({
-      name: "bybit_eth_60d_backtest.png",
-      url: "https://images.unsplash.com/photo-1642790106117-e829e14a795f?q=80&w=300"
-    });
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    try {
+      const result = await api.uploadFile(file, "uploads");
+      setAttachedImage({
+        name: result.name,
+        url: result.file_url
+      });
+    } catch (err) {
+      alert(`Upload failed: ${err.message}`);
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   return (
     <div className="relative min-h-screen">
-      <div className="glow-blob w-[450px] h-[450px] bg-[#8B7CFF]/4 -top-10 left-1/4 opacity-60" />
+      <div className="glow-blob w-[500px] h-[500px] bg-[#D900FF]/10 -top-10 left-1/4 opacity-60" />
 
-      <div className="relative p-8 max-w-7xl mx-auto space-y-6">
+      <div className="relative p-6 md:p-10 max-w-7xl mx-auto space-y-8">
         
         {/* Title */}
         <div>
-          <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-[#8B7CFF]">
-            <Wand2 size={12} /> Drafting Studio
+          <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-[#D900FF]">
+            <Wand2 size={14} className="drop-shadow-[0_0_8px_rgba(217,0,255,0.8)]" /> Drafting Studio
           </div>
-          <h1 className="font-display text-2xl font-bold tracking-tight text-white mt-1.5">
+          <h1 className="font-display text-4xl font-bold tracking-tight text-white mt-2">
             Composer
           </h1>
-          <p className="text-[#8B93A7] text-xs mt-0.5">
+          <p className="text-[#A1A1AA] text-[13px] mt-1.5 font-light">
             Draft once. Gemini automatically adapts style, format, and character parameters per platform.
           </p>
         </div>
@@ -157,31 +171,31 @@ export default function Composer() {
           
           {/* Left panel (Inputs) */}
           <div className="lg:col-span-2 space-y-6">
-            <div className="glass-panel rounded-2xl p-6 space-y-5">
+            <div className="glass-panel rounded-3xl p-8 space-y-6">
               
               {/* Input Area */}
-              <div className="space-y-2">
-                <label className="text-[10px] font-mono uppercase text-[#8B93A7] tracking-wider">Raw Idea / Source Changelog</label>
+              <div className="space-y-3">
+                <label className="text-[10px] font-mono uppercase text-[#A1A1AA] tracking-wider">Raw Idea / Source Changelog</label>
                 <textarea
                   value={baseContent}
                   onChange={(e) => setBaseContent(e.target.value)}
                   placeholder="Paste your raw tech updates, changelogs, backtests, or draft details here..."
                   rows={6}
-                  className="w-full glass-input rounded-xl px-4 py-3 text-xs text-white placeholder:text-[#5C6478] outline-none resize-none font-mono"
+                  className="w-full glass-input bg-[#05050A]/40 rounded-2xl px-5 py-4 text-[13px] text-white placeholder:text-[#52525B] outline-none resize-none font-mono focus:border-[#D900FF]/40 focus:bg-white/[0.04] transition-all"
                 />
-                <div className="flex justify-between items-center text-[10px] font-mono text-[#5C6478]">
+                <div className="flex justify-between items-center text-[10px] font-mono text-[#52525B]">
                   <span>Words: {baseContent.split(/\s+/).filter(Boolean).length}</span>
                   <span>Chars: {baseContent.length}</span>
                 </div>
               </div>
 
               {/* Brand Voice Selector */}
-              <div className="space-y-2">
-                <label className="text-[10px] font-mono uppercase text-[#8B93A7] tracking-wider">Brand Voice Preset</label>
+              <div className="space-y-3">
+                <label className="text-[10px] font-mono uppercase text-[#A1A1AA] tracking-wider">Brand Voice Preset</label>
                 <select
                   value={brandVoice}
                   onChange={(e) => setBrandVoice(e.target.value)}
-                  className="w-full bg-[#090C12] border border-white/5 rounded-xl px-3 py-2.5 text-xs text-white outline-none focus:border-[#8B7CFF]/30"
+                  className="w-full bg-[#05050A]/60 border border-white/5 rounded-2xl px-4 py-3.5 text-[13px] text-white outline-none focus:border-[#D900FF]/40 transition-all cursor-pointer shadow-inner"
                 >
                   {BRAND_VOICES.map((v) => (
                     <option key={v.id} value={v.id}>{v.label}</option>
@@ -190,9 +204,9 @@ export default function Composer() {
               </div>
 
               {/* Platform Targets */}
-              <div className="space-y-2">
-                <label className="text-[10px] font-mono uppercase text-[#8B93A7] tracking-wider">Channel Distribution</label>
-                <div className="grid grid-cols-2 gap-2.5">
+              <div className="space-y-3">
+                <label className="text-[10px] font-mono uppercase text-[#A1A1AA] tracking-wider">Channel Distribution</label>
+                <div className="grid grid-cols-2 gap-3">
                   {PLATFORMS.map((p) => {
                     const Icon = p.icon;
                     const active = selectedPlatforms.includes(p.id);
@@ -200,16 +214,18 @@ export default function Composer() {
                       <button
                         key={p.id}
                         onClick={() => togglePlatform(p.id)}
-                        className={`flex items-center gap-3 p-3 rounded-xl border text-left transition-all duration-200 ${
+                        className={`flex items-center gap-3.5 p-3.5 rounded-2xl border text-left transition-all duration-300 ${
                           active
-                            ? "border-[#43FFB0]/40 bg-[#43FFB0]/5 text-white"
-                            : "border-white/5 bg-white/[0.01] text-[#8B93A7] hover:border-white/10 hover:text-white"
+                            ? "border-[#00E5FF]/40 bg-[#00E5FF]/10 text-white shadow-[0_0_15px_rgba(0,229,255,0.15)]"
+                            : "border-white/5 bg-white/[0.01] text-[#A1A1AA] hover:border-white/10 hover:text-white"
                         }`}
                       >
-                        <Icon size={14} className={active ? "text-[#43FFB0]" : "text-[#8B93A7]"} />
+                        <div className={`p-2 rounded-xl transition-all ${active ? "bg-[#00E5FF] text-black shadow-[0_0_8px_rgba(0,229,255,0.8)]" : "bg-white/[0.04] text-[#A1A1AA]"}`}>
+                          <Icon size={14} />
+                        </div>
                         <div>
                           <p className="text-[11px] font-semibold">{p.label}</p>
-                          <p className="text-[8px] font-mono text-[#5C6478] truncate max-w-[90px]">{p.desc}</p>
+                          <p className="text-[9px] font-mono text-white/40 truncate max-w-[80px]">{p.desc}</p>
                         </div>
                       </button>
                     );
@@ -218,56 +234,54 @@ export default function Composer() {
               </div>
 
               {/* Media Attachment */}
-              <div className="space-y-2 pt-2 border-t border-white/5">
-                <label className="text-[10px] font-mono uppercase text-[#8B93A7] tracking-wider flex items-center justify-between">
+              <div className="space-y-3 pt-3 border-t border-white/5">
+                <label className="text-[10px] font-mono uppercase text-[#A1A1AA] tracking-wider flex items-center justify-between">
                   <span>Vault Attachment</span>
                   {attachedImage && (
                     <button 
                       onClick={() => setAttachedImage(null)}
-                      className="text-[#FF5C7A] hover:underline text-[9px] font-mono uppercase"
+                      className="text-[#FF2A5F] hover:underline text-[9px] font-mono uppercase tracking-widest"
                     >
                       Remove
                     </button>
                   )}
                 </label>
                 {attachedImage ? (
-                  <div className="flex items-center gap-3 p-2.5 rounded-xl bg-white/[0.02] border border-white/5 text-xs text-[#E4E7EC]">
-                    <img src={attachedImage.url} className="w-8 h-8 rounded object-cover" />
-                    <span className="truncate flex-1 font-mono text-[10px]">{attachedImage.name}</span>
-                    <CheckCircle2 size={14} className="text-[#43FFB0]" />
+                  <div className="flex items-center gap-3 p-3 rounded-2xl bg-white/[0.02] border border-white/5 text-xs text-[#E4E7EC] shadow-inner">
+                    <img src={attachedImage.url} className="w-10 h-10 rounded-lg object-cover" />
+                    <span className="truncate flex-1 font-mono text-[11px]">{attachedImage.name}</span>
+                    <CheckCircle2 size={16} className="text-[#00E5FF] drop-shadow-[0_0_8px_rgba(0,229,255,0.8)]" />
                   </div>
                 ) : (
-                  <button
-                    onClick={simulateAttachImage}
-                    className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-dashed border-white/5 hover:border-white/10 bg-white/[0.01] text-[#8B93A7] hover:text-white text-xs font-medium transition-all"
-                  >
-                    <Paperclip size={13} />
-                    <span>Attach Backtest / Vault Image</span>
-                  </button>
+                  <label className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl border border-dashed border-white/10 hover:border-[#D900FF]/40 hover:bg-[#D900FF]/[0.02] hover:text-white bg-white/[0.01] text-[#A1A1AA] text-xs font-medium transition-all cursor-pointer">
+                    {isUploading ? <RefreshCw size={14} className="animate-spin" /> : <Paperclip size={14} />}
+                    <span>{isUploading ? "Uploading to Vault..." : "Attach Image / Media"}</span>
+                    <input type="file" className="hidden" onChange={handleFileUpload} accept="image/*,video/*" disabled={isUploading} />
+                  </label>
                 )}
               </div>
 
               {/* Group URL input if applicable */}
               {selectedPlatforms.includes("facebook_group") && (
-                <div className="space-y-2 pt-2 border-t border-white/5">
-                  <label className="text-[10px] font-mono uppercase text-[#8B93A7] tracking-wider">Facebook Group URL</label>
+                <div className="space-y-3 pt-3 border-t border-white/5">
+                  <label className="text-[10px] font-mono uppercase text-[#A1A1AA] tracking-wider">Facebook Group URL</label>
                   <input
                     value={groupUrl}
                     onChange={(e) => setGroupUrl(e.target.value)}
                     placeholder="https://facebook.com/groups/your-group-id"
-                    className="w-full glass-input rounded-xl px-3 py-2.5 text-xs text-white placeholder:text-[#5C6478] outline-none"
+                    className="w-full glass-input bg-[#05050A]/40 rounded-2xl px-4 py-3 text-[13px] text-white placeholder:text-[#52525B] outline-none focus:border-[#D900FF]/40 transition-all"
                   />
                 </div>
               )}
 
               {/* Location Tag */}
-              <div className="space-y-2">
-                <label className="text-[10px] font-mono uppercase text-[#8B93A7] tracking-wider">Location Tag (Optional)</label>
+              <div className="space-y-3">
+                <label className="text-[10px] font-mono uppercase text-[#A1A1AA] tracking-wider">Location Tag (Optional)</label>
                 <input
                   value={locationTag}
                   onChange={(e) => setLocationTag(e.target.value)}
                   placeholder="e.g. Lagos, Nigeria"
-                  className="w-full glass-input rounded-xl px-3 py-2.5 text-xs text-white placeholder:text-[#5C6478] outline-none"
+                  className="w-full glass-input bg-[#05050A]/40 rounded-2xl px-4 py-3 text-[13px] text-white placeholder:text-[#52525B] outline-none focus:border-[#D900FF]/40 transition-all"
                 />
               </div>
 
@@ -275,15 +289,15 @@ export default function Composer() {
               <button
                 onClick={generate}
                 disabled={generating || !baseContent.trim() || selectedPlatforms.length === 0}
-                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#43FFB0] to-[#8B7CFF] text-[#06080C] font-bold text-xs hover:shadow-lg hover:shadow-[#8B7CFF]/15 hover:scale-[1.01] active:scale-[0.99] transition-all disabled:opacity-40"
+                className="w-full py-4 rounded-2xl bg-gradient-to-r from-[#00E5FF] to-[#D900FF] text-black font-bold text-[13px] hover:shadow-[0_0_20px_rgba(0,229,255,0.3)] hover:scale-[1.01] active:scale-[0.99] transition-all disabled:opacity-40 disabled:hover:scale-100 disabled:hover:shadow-none"
               >
                 {generating ? (
                   <span className="flex items-center justify-center gap-2">
-                    <RefreshCw size={13} className="animate-spin" /> Adapting content with Gemini...
+                    <RefreshCw size={14} className="animate-spin" /> Adapting content with Gemini...
                   </span>
                 ) : (
                   <span className="flex items-center justify-center gap-2">
-                    <Sparkles size={13} /> Generate Platform Adaptations
+                    <Sparkles size={14} /> Generate Platform Adaptations
                   </span>
                 )}
               </button>
@@ -294,10 +308,10 @@ export default function Composer() {
           {/* Right panel (Variants Stack) */}
           <div className="lg:col-span-3 space-y-6">
             {variants.length > 0 ? (
-              <div className="space-y-5">
+              <div className="space-y-6">
                 <div className="flex items-center justify-between">
                   <h3 className="text-sm font-semibold text-white uppercase tracking-wider font-mono">Tailored Previews</h3>
-                  <span className="text-[10px] text-[#5C6478] font-mono">Select variants to deploy</span>
+                  <span className="text-[10px] text-[#52525B] font-mono">Select variants to deploy</span>
                 </div>
 
                 {variants.map((v) => {
@@ -308,32 +322,32 @@ export default function Composer() {
                   const activeVar = v.activeVariant || "A";
 
                   return (
-                    <div key={v.platform} className="glass-panel rounded-2xl p-5 space-y-4 border border-white/5 hover:border-white/10 transition-all duration-300">
+                    <div key={v.platform} className="glass-panel rounded-3xl p-6 space-y-5 border border-white/5 hover:border-white/10 transition-all duration-300">
                       
                       {/* Platform header */}
-                      <div className="flex items-center justify-between border-b border-white/5 pb-3">
-                        <div className="flex items-center gap-2">
-                          <div className="p-1.5 rounded-lg bg-white/[0.03] text-[#8B7CFF]">
-                            <Icon size={14} />
+                      <div className="flex items-center justify-between border-b border-white/5 pb-4">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 rounded-xl bg-white/[0.04] text-[#D900FF]">
+                            <Icon size={16} />
                           </div>
-                          <span className="text-xs font-semibold text-white font-mono uppercase">{platMeta.label} Preview</span>
+                          <span className="text-[13px] font-semibold text-white font-mono uppercase">{platMeta.label} Preview</span>
                         </div>
 
                         {/* A/B Switcher */}
                         {v.contentB && (
-                          <div className="flex items-center gap-1.5 bg-[#090C12] p-0.5 rounded-lg border border-white/5 text-[9px] font-mono">
+                          <div className="flex items-center gap-1.5 bg-[#05050A] p-1 rounded-xl border border-white/5 text-[10px] font-mono shadow-inner">
                             <button
                               onClick={() => updateVariantAlternate(v.id)}
-                              className={`px-2 py-0.5 rounded transition-colors ${
-                                activeVar === "A" ? "bg-white/5 text-white" : "text-[#5C6478] hover:text-white"
+                              className={`px-3 py-1 rounded-lg transition-all ${
+                                activeVar === "A" ? "bg-white/10 text-white shadow-sm" : "text-[#52525B] hover:text-white hover:bg-white/5"
                               }`}
                             >
                               Variant A
                             </button>
                             <button
                               onClick={() => updateVariantAlternate(v.id)}
-                              className={`px-2 py-0.5 rounded transition-colors ${
-                                activeVar === "B" ? "bg-white/5 text-white" : "text-[#5C6478] hover:text-white"
+                              className={`px-3 py-1 rounded-lg transition-all ${
+                                activeVar === "B" ? "bg-white/10 text-white shadow-sm" : "text-[#52525B] hover:text-white hover:bg-white/5"
                               }`}
                             >
                               Variant B
@@ -347,14 +361,14 @@ export default function Composer() {
                         value={v.content}
                         onChange={(e) => updateVariantText(v.id, e.target.value)}
                         rows={4}
-                        className="w-full bg-[#06080C]/40 border border-white/5 rounded-xl px-3.5 py-3 text-xs leading-relaxed text-white outline-none focus:border-[#43FFB0]/20 font-mono"
+                        className="w-full bg-[#05050A]/40 border border-white/5 rounded-2xl px-5 py-4 text-[13px] leading-relaxed text-white outline-none focus:border-[#00E5FF]/40 font-mono shadow-inner transition-all"
                       />
 
                       {/* Hashtags block */}
                       {v.hashtags && v.hashtags.length > 0 && (
-                        <div className="flex flex-wrap gap-1.5">
+                        <div className="flex flex-wrap gap-2">
                           {v.hashtags.map((tag) => (
-                            <span key={tag} className="text-[9px] font-mono text-[#5C6478] bg-white/[0.02] px-2 py-0.5 rounded border border-white/5">
+                            <span key={tag} className="text-[10px] font-mono text-[#D900FF] bg-[#D900FF]/10 px-2.5 py-1 rounded-lg border border-[#D900FF]/20">
                               #{tag}
                             </span>
                           ))}
@@ -363,35 +377,35 @@ export default function Composer() {
 
                       {/* Character limit bar */}
                       <div className="flex justify-between items-center text-[10px] font-mono">
-                        <span className={isOverLimit ? "text-[#FF5C7A]" : "text-[#5C6478]"}>
+                        <span className={isOverLimit ? "text-[#FF2A5F]" : "text-[#A1A1AA]"}>
                           Characters Left: {charLeft} / {platMeta.maxChar}
                         </span>
                         {isOverLimit && (
-                          <span className="text-[#FF5C7A] text-[9px] uppercase font-bold">Limit Exceeded</span>
+                          <span className="text-[#FF2A5F] text-[10px] uppercase font-bold tracking-wider">Limit Exceeded</span>
                         )}
                       </div>
 
                       {/* Operations tray */}
-                      <div className="flex flex-wrap items-center justify-between gap-4 pt-3 border-t border-white/5">
+                      <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-white/5">
                         
                         {/* Scheduler Popup Trigger */}
                         {schedulingPostId === v.id ? (
-                          <div className="flex items-center gap-2 bg-[#090C12] border border-white/5 p-1 rounded-xl">
+                          <div className="flex items-center gap-2 bg-[#05050A] border border-white/5 p-1.5 rounded-xl shadow-inner">
                             <input
                               type="datetime-local"
                               value={scheduleDate}
                               onChange={(e) => setScheduleDate(e.target.value)}
-                              className="bg-transparent text-[10px] font-mono text-white outline-none px-2"
+                              className="bg-transparent text-[11px] font-mono text-white outline-none px-2"
                             />
                             <button
                               onClick={() => handleScheduleSubmit(v.id)}
-                              className="text-[10px] font-semibold text-[#43FFB0] bg-[#43FFB0]/10 px-2.5 py-1 rounded-lg border border-[#43FFB0]/20"
+                              className="text-[11px] font-semibold text-[#00E5FF] bg-[#00E5FF]/10 px-3 py-1.5 rounded-lg border border-[#00E5FF]/20"
                             >
                               Confirm
                             </button>
                             <button
                               onClick={() => setSchedulingPostId(null)}
-                              className="text-[10px] font-semibold text-[#FF5C7A] px-2 py-1"
+                              className="text-[11px] font-semibold text-[#FF2A5F] px-3 py-1.5"
                             >
                               Cancel
                             </button>
@@ -399,9 +413,9 @@ export default function Composer() {
                         ) : (
                           <button
                             onClick={() => setSchedulingPostId(v.id)}
-                            className="flex items-center gap-1.5 text-[10px] font-mono text-[#8B93A7] hover:text-white transition-colors"
+                            className="flex items-center gap-2 text-[11px] font-mono text-[#A1A1AA] hover:text-white transition-colors"
                           >
-                            <Clock size={12} /> Schedule Post
+                            <Clock size={14} /> Schedule Post
                           </button>
                         )}
 
@@ -409,15 +423,15 @@ export default function Composer() {
                         <button
                           onClick={() => publish(v)}
                           disabled={isOverLimit}
-                          className="flex items-center gap-1.5 text-xs font-semibold text-[#43FFB0] hover:text-[#43FFB0]/80 transition-colors disabled:opacity-30"
+                          className="flex items-center gap-2 text-[13px] font-semibold text-[#00E5FF] hover:text-white hover:drop-shadow-[0_0_8px_rgba(0,229,255,0.8)] transition-all disabled:opacity-30 disabled:hover:drop-shadow-none"
                         >
                           {v.platform === "facebook_group" ? (
                             <>
-                              <Plus size={14} /> Queue for Assisted Posting
+                              <Plus size={16} /> Queue for Assisted Posting
                             </>
                           ) : (
                             <>
-                              <Send size={12} /> Deploy Signal Now
+                              <Send size={14} /> Deploy Signal Now
                             </>
                           )}
                         </button>
@@ -429,10 +443,10 @@ export default function Composer() {
                 })}
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center py-32 text-center border border-dashed border-white/5 rounded-2xl glass-panel">
-                <MessageSquareCode size={36} className="text-[#5C6478] mb-3 opacity-30" />
-                <h3 className="text-sm font-semibold text-white">Pre-generation view</h3>
-                <p className="text-xs text-[#5C6478] max-w-xs mt-1">
+              <div className="flex flex-col items-center justify-center py-40 text-center border border-dashed border-white/10 rounded-3xl glass-panel">
+                <MessageSquareCode size={48} className="text-[#A1A1AA] mb-4 opacity-20" />
+                <h3 className="text-base font-semibold text-white tracking-wide">Pre-generation view</h3>
+                <p className="text-[13px] text-[#52525B] max-w-sm mt-2 leading-relaxed">
                   Inputs on the left, click adapt variants to fetch Gemini platform adaptations.
                 </p>
               </div>
@@ -445,6 +459,7 @@ export default function Composer() {
     </div>
   );
 }
+
 
 function generateMockVariants(baseContent, platforms, brandVoice) {
   const defaultTime = new Date().toISOString();

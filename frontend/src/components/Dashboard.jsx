@@ -18,21 +18,21 @@ import {
 } from "lucide-react";
 import { api } from "../api";
 
-function StatCard({ label, value, description, icon: Icon, colorClass = "text-[#43FFB0]" }) {
+function StatCard({ label, value, description, icon: Icon, colorClass = "text-[#00E5FF]" }) {
   return (
-    <div className="glass-panel rounded-2xl p-5 flex flex-col justify-between relative overflow-hidden group hover:border-white/10 transition-all duration-300">
+    <div className="glass-panel rounded-3xl p-6 flex flex-col justify-between relative overflow-hidden group hover:border-white/10 transition-all duration-300">
       {/* Background glow overlay */}
-      <div className="absolute -right-6 -bottom-6 w-20 h-20 bg-white/[0.01] rounded-full group-hover:scale-150 transition-transform duration-500" />
+      <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-white/[0.02] rounded-full group-hover:scale-[2] transition-transform duration-700 ease-out" />
       
-      <div className="flex items-center justify-between">
-        <span className="text-[10px] font-mono uppercase tracking-wider text-[#8B93A7]">{label}</span>
-        <div className="p-2 rounded-xl bg-white/[0.03] border border-white/5 group-hover:border-white/10 transition-colors">
-          <Icon size={16} className={colorClass} />
+      <div className="flex items-center justify-between z-10 relative">
+        <span className="text-[10px] font-mono uppercase tracking-wider text-[#A1A1AA]">{label}</span>
+        <div className="p-2.5 rounded-2xl bg-white/[0.03] border border-white/5 group-hover:border-white/10 transition-colors backdrop-blur-md">
+          <Icon size={18} className={colorClass} style={{ filter: "drop-shadow(0 0 8px currentColor)" }} />
         </div>
       </div>
-      <div className="mt-4">
-        <h3 className="text-3xl font-display font-bold tracking-tight text-white">{value}</h3>
-        <p className="text-[11px] text-[#5C6478] mt-1 font-mono">{description}</p>
+      <div className="mt-6 z-10 relative">
+        <h3 className="text-4xl font-display font-bold tracking-tight text-white">{value}</h3>
+        <p className="text-xs text-[#52525B] mt-1.5 font-mono">{description}</p>
       </div>
     </div>
   );
@@ -42,15 +42,15 @@ const PLATFORM_META = {
   facebook_page: { name: "FB Page", icon: Facebook, color: "text-[#1877F2]", bg: "bg-[#1877F2]/10", border: "border-[#1877F2]/20" },
   instagram: { name: "Instagram", icon: Instagram, color: "text-[#E1306C]", bg: "bg-[#E1306C]/10", border: "border-[#E1306C]/20" },
   linkedin: { name: "LinkedIn", icon: Linkedin, color: "text-[#0A66C2]", bg: "bg-[#0A66C2]/10", border: "border-[#0A66C2]/20" },
-  facebook_group: { name: "FB Groups", icon: Users, color: "text-[#43FFB0]", bg: "bg-[#43FFB0]/10", border: "border-[#43FFB0]/20" },
+  facebook_group: { name: "FB Groups", icon: Users, color: "text-[#00E5FF]", bg: "bg-[#00E5FF]/10", border: "border-[#00E5FF]/20" },
 };
 
 const CONNECTION_ITEMS = [
-  { key: "fb", name: "Meta Graph API", type: "Official API", status: "active", icon: Facebook, scopes: "pages_manage_posts, instagram_basic", statusColor: "text-[#43FFB0]" },
-  { key: "ig", name: "Instagram Graph", type: "Official API", status: "active", icon: Instagram, scopes: "instagram_content_publish", statusColor: "text-[#43FFB0]" },
-  { key: "li", name: "LinkedIn OAuth", type: "Official API", status: "needs_setup", icon: Linkedin, scopes: "w_member_social, r_liteprofile", statusColor: "text-[#FF5C7A]" },
-  { key: "pe", name: "Puppeteer Service", type: "Local Chrome Profile", status: "ready", icon: Users, scopes: "FB Group Autofill Browser", statusColor: "text-[#43FFB0]" },
-  { key: "ai", name: "Gemini Brain", type: "Google Generative AI", status: "active", icon: Cpu, scopes: "gemini-2.5-flash (Free Tier)", statusColor: "text-[#8B7CFF]" },
+  { key: "fb", name: "Meta Graph API", type: "Official API", status: "active", icon: Facebook, scopes: "pages_manage_posts, instagram_basic", statusColor: "text-[#00E5FF]" },
+  { key: "ig", name: "Instagram Graph", type: "Official API", status: "active", icon: Instagram, scopes: "instagram_content_publish", statusColor: "text-[#00E5FF]" },
+  { key: "li", name: "LinkedIn OAuth", type: "Official API", status: "needs_setup", icon: Linkedin, scopes: "w_member_social, r_liteprofile", statusColor: "text-[#FF2A5F]" },
+  { key: "pe", name: "Puppeteer Service", type: "Local Chrome Profile", status: "ready", icon: Users, scopes: "FB Group Autofill Browser", statusColor: "text-[#00E5FF]" },
+  { key: "ai", name: "Gemini Brain", type: "Google Generative AI", status: "active", icon: Cpu, scopes: "gemini-2.5-flash (Free Tier)", statusColor: "text-[#D900FF]" },
 ];
 
 export default function Dashboard() {
@@ -65,13 +65,11 @@ export default function Dashboard() {
         if (data && data.length > 0) {
           setPosts(data);
         } else {
-          // If database is empty, load rich mock data for visual experience
           setPosts(getMockPosts());
         }
         setLoading(false);
       })
       .catch(() => {
-        // Fail-safe to mock data if API is offline
         setPosts(getMockPosts());
         setLoading(false);
       });
@@ -90,54 +88,54 @@ export default function Dashboard() {
   return (
     <div className="relative min-h-screen">
       {/* Background glow filters */}
-      <div className="glow-blob w-[500px] h-[500px] bg-[#8B7CFF]/5 -top-40 -left-20 opacity-70" />
-      <div className="glow-blob w-[400px] h-[400px] bg-[#43FFB0]/4 top-20 right-0 opacity-50" />
+      <div className="glow-blob w-[600px] h-[600px] bg-[#D900FF]/10 -top-20 -left-20 opacity-60" />
+      <div className="glow-blob w-[500px] h-[500px] bg-[#00E5FF]/10 top-40 right-0 opacity-40" />
 
-      <div className="relative p-8 space-y-8 max-w-7xl mx-auto">
+      <div className="relative p-6 md:p-10 space-y-10 max-w-7xl mx-auto">
         {/* On-air Section Indicator */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2.5 text-[10px] font-mono uppercase tracking-widest text-[#43FFB0] bg-[#43FFB0]/5 px-3 py-1.5 rounded-full border border-[#43FFB0]/15">
-            <Radio size={12} className="pulse-dot rounded-full text-[#43FFB0]" />
+          <div className="flex items-center gap-2.5 text-[10px] font-mono uppercase tracking-widest text-[#00E5FF] bg-[#00E5FF]/10 px-4 py-2 rounded-full border border-[#00E5FF]/20 drop-shadow-[0_0_8px_rgba(0,229,255,0.4)]">
+            <Radio size={14} className="pulse-dot rounded-full text-[#00E5FF]" />
             Command Center
           </div>
-          <span className="text-xs font-mono text-[#5C6478]">Last Updated: Just Now</span>
+          <span className="text-xs font-mono text-[#52525B]">Last Updated: Just Now</span>
         </div>
 
         {/* Hero title */}
-        <div className="space-y-2">
-          <h1 className="font-display text-4xl font-bold tracking-tight text-white leading-tight">
+        <div className="space-y-3">
+          <h1 className="font-display text-5xl md:text-6xl font-bold tracking-tight text-white leading-tight">
             Everything you're broadcasting. <br />
-            <span className="bg-gradient-to-r from-[#43FFB0] via-[#8B7CFF] to-blue-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[#00E5FF] via-[#D900FF] to-[#FF2A5F] bg-clip-text text-transparent">
               One unified signal feed.
             </span>
           </h1>
-          <p className="text-[#8B93A7] text-sm max-w-xl">
-            Monitor API publication logs, trigger local Puppeteer automation runs, and audit content adaptations.
+          <p className="text-[#A1A1AA] text-base md:text-lg max-w-2xl font-light">
+            Monitor API publication logs, trigger local Puppeteer automation runs, and audit content adaptations across all your active channels.
           </p>
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <StatCard 
             label="Posted Signals" 
             value={postedCount} 
             description="+4 from yesterday" 
             icon={TrendingUp} 
-            colorClass="text-[#43FFB0]" 
+            colorClass="text-[#00E5FF]" 
           />
           <StatCard 
             label="Pending Queue" 
             value={pendingCount} 
             description="Scheduled automatically" 
             icon={Clock} 
-            colorClass="text-[#8B7CFF]" 
+            colorClass="text-[#D900FF]" 
           />
           <StatCard 
             label="Platform Failures" 
             value={failedCount} 
             description="Requires token refresh" 
             icon={AlertCircle} 
-            colorClass="text-[#FF5C7A]" 
+            colorClass="text-[#FF2A5F]" 
           />
           <StatCard 
             label="Content Vault" 
@@ -149,43 +147,47 @@ export default function Dashboard() {
         </div>
 
         {/* Visual Analytics Chart & Connections */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
           {/* SVG Line Chart (2 cols) */}
-          <div className="glass-panel rounded-2xl p-6 lg:col-span-2 space-y-4">
+          <div className="glass-panel rounded-3xl p-8 lg:col-span-2 space-y-6">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-semibold text-white">Broadcast Analytics</h3>
-                <p className="text-xs text-[#5C6478] font-mono">Simulated volume / engagement index</p>
+                <h3 className="text-base font-semibold text-white tracking-wide">Broadcast Analytics</h3>
+                <p className="text-xs text-[#52525B] font-mono mt-1">Simulated volume / engagement index</p>
               </div>
-              <div className="flex gap-4 text-[10px] font-mono">
-                <span className="flex items-center gap-1.5 text-[#43FFB0]">
-                  <span className="w-2 h-2 rounded bg-[#43FFB0]" /> Reach Index
+              <div className="flex gap-5 text-xs font-mono bg-white/[0.02] py-2 px-4 rounded-xl border border-white/5">
+                <span className="flex items-center gap-2 text-[#00E5FF]">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#00E5FF] shadow-[0_0_8px_rgba(0,229,255,0.8)]" /> Reach Index
                 </span>
-                <span className="flex items-center gap-1.5 text-[#8B7CFF]">
-                  <span className="w-2 h-2 rounded bg-[#8B7CFF]" /> Volume
+                <span className="flex items-center gap-2 text-[#D900FF]">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#D900FF] shadow-[0_0_8px_rgba(217,0,255,0.8)]" /> Volume
                 </span>
               </div>
             </div>
 
             {/* SVG area chart */}
-            <div className="h-56 w-full relative pt-4">
-              <svg className="w-full h-full" viewBox="0 0 500 150" preserveAspectRatio="none">
+            <div className="h-64 w-full relative pt-4">
+              <svg className="w-full h-full drop-shadow-xl" viewBox="0 0 500 150" preserveAspectRatio="none">
                 <defs>
                   <linearGradient id="glow-reach" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#43FFB0" stopOpacity="0.25" />
-                    <stop offset="100%" stopColor="#43FFB0" stopOpacity="0" />
+                    <stop offset="0%" stopColor="#00E5FF" stopOpacity="0.4" />
+                    <stop offset="100%" stopColor="#00E5FF" stopOpacity="0" />
                   </linearGradient>
                   <linearGradient id="glow-vol" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#8B7CFF" stopOpacity="0.25" />
-                    <stop offset="100%" stopColor="#8B7CFF" stopOpacity="0" />
+                    <stop offset="0%" stopColor="#D900FF" stopOpacity="0.4" />
+                    <stop offset="100%" stopColor="#D900FF" stopOpacity="0" />
                   </linearGradient>
+                  <filter id="neon-glow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feGaussianBlur stdDeviation="3" result="blur" />
+                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                  </filter>
                 </defs>
 
                 {/* Grid Lines */}
-                <line x1="0" y1="30" x2="500" y2="30" stroke="rgba(255,255,255,0.03)" strokeWidth="1" />
-                <line x1="0" y1="75" x2="500" y2="75" stroke="rgba(255,255,255,0.03)" strokeWidth="1" />
-                <line x1="0" y1="120" x2="500" y2="120" stroke="rgba(255,255,255,0.03)" strokeWidth="1" />
+                <line x1="0" y1="30" x2="500" y2="30" stroke="rgba(255,255,255,0.04)" strokeWidth="1" strokeDasharray="4 4" />
+                <line x1="0" y1="75" x2="500" y2="75" stroke="rgba(255,255,255,0.04)" strokeWidth="1" strokeDasharray="4 4" />
+                <line x1="0" y1="120" x2="500" y2="120" stroke="rgba(255,255,255,0.04)" strokeWidth="1" strokeDasharray="4 4" />
 
                 {/* Reach Area Fill */}
                 <path 
@@ -197,9 +199,10 @@ export default function Dashboard() {
                 <path 
                   d="M0,130 C50,110 100,70 150,90 C200,110 250,50 300,40 C350,30 400,80 450,45 C480,25 500,20 500,20" 
                   fill="none" 
-                  stroke="#43FFB0" 
-                  strokeWidth="2.5" 
+                  stroke="#00E5FF" 
+                  strokeWidth="3" 
                   strokeLinecap="round"
+                  filter="url(#neon-glow)"
                   className="animate-draw-line"
                 />
 
@@ -213,14 +216,15 @@ export default function Dashboard() {
                 <path 
                   d="M0,145 C50,135 100,120 150,105 C200,90 250,100 300,80 C350,60 400,65 450,50 C480,40 500,35 500,35" 
                   fill="none" 
-                  stroke="#8B7CFF" 
-                  strokeWidth="2" 
+                  stroke="#D900FF" 
+                  strokeWidth="2.5" 
                   strokeLinecap="round"
-                  strokeDasharray="4 4"
+                  strokeDasharray="6 4"
+                  filter="url(#neon-glow)"
                 />
               </svg>
               {/* X Axis Labels */}
-              <div className="flex justify-between text-[9px] font-mono text-[#5C6478] mt-2 px-1">
+              <div className="flex justify-between text-[10px] font-mono text-[#52525B] mt-4 px-1">
                 <span>Mon</span>
                 <span>Tue</span>
                 <span>Wed</span>
@@ -233,28 +237,28 @@ export default function Dashboard() {
           </div>
 
           {/* Platform Connections Status */}
-          <div className="glass-panel rounded-2xl p-6 space-y-4">
+          <div className="glass-panel rounded-3xl p-8 space-y-6">
             <div>
-              <h3 className="text-sm font-semibold text-white">Platform Integrations</h3>
-              <p className="text-xs text-[#5C6478] font-mono">Active token validation states</p>
+              <h3 className="text-base font-semibold text-white tracking-wide">Platform Integrations</h3>
+              <p className="text-xs text-[#52525B] font-mono mt-1">Active token validation states</p>
             </div>
-            <div className="space-y-3">
+            <div className="space-y-4">
               {CONNECTION_ITEMS.map((c) => {
                 const Icon = c.icon;
                 return (
-                  <div key={c.key} className="flex items-center justify-between p-3 rounded-xl bg-white/[0.02] border border-white/5 hover:border-white/10 transition-colors group">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-lg bg-white/[0.03] text-[#8B93A7] group-hover:text-white transition-colors">
-                        <Icon size={14} />
+                  <div key={c.key} className="flex items-center justify-between p-3.5 rounded-2xl bg-[#05050A]/40 border border-white/5 hover:border-white/10 hover:bg-white/[0.02] transition-all group shadow-inner">
+                    <div className="flex items-center gap-4 min-w-0">
+                      <div className="p-2.5 rounded-xl bg-white/[0.04] text-[#A1A1AA] group-hover:text-white group-hover:scale-110 transition-all">
+                        <Icon size={16} />
                       </div>
                       <div className="min-w-0">
-                        <p className="text-xs font-semibold text-white truncate">{c.name}</p>
-                        <p className="text-[9px] font-mono text-[#5C6478] truncate">{c.scopes}</p>
+                        <p className="text-[13px] font-semibold text-white truncate">{c.name}</p>
+                        <p className="text-[10px] font-mono text-[#52525B] truncate mt-0.5">{c.scopes}</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-1.5">
-                      <span className={`w-1.5 h-1.5 rounded-full ${c.status === "needs_setup" ? "bg-[#FF5C7A] pulse-dot-alert" : "bg-[#43FFB0] pulse-dot"}`} />
-                      <span className={`text-[9px] font-mono font-medium ${c.statusColor}`}>{c.status}</span>
+                    <div className="flex items-center gap-2 pl-2">
+                      <span className={`w-2 h-2 rounded-full ${c.status === "needs_setup" ? "bg-[#FF2A5F] pulse-dot-alert shadow-[0_0_8px_rgba(255,42,95,0.8)]" : "bg-[#00E5FF] pulse-dot shadow-[0_0_8px_rgba(0,229,255,0.8)]"}`} />
+                      <span className={`text-[10px] font-mono font-medium ${c.statusColor}`}>{c.status}</span>
                     </div>
                   </div>
                 );
@@ -265,23 +269,23 @@ export default function Dashboard() {
         </div>
 
         {/* Activity Feed */}
-        <div className="glass-panel rounded-2xl p-6 space-y-5">
-          <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="glass-panel rounded-3xl p-8 space-y-6">
+          <div className="flex flex-wrap items-center justify-between gap-6">
             <div>
-              <h3 className="text-sm font-semibold text-white">Signals Transmission Logs</h3>
-              <p className="text-xs text-[#5C6478] font-mono">Recent adaptive post logs</p>
+              <h3 className="text-base font-semibold text-white tracking-wide">Signals Transmission Logs</h3>
+              <p className="text-xs text-[#52525B] font-mono mt-1">Recent adaptive post logs</p>
             </div>
             
             {/* Filter Tabs */}
-            <div className="flex items-center gap-1.5 bg-[#090C12] p-1 rounded-lg border border-white/5 text-[11px] font-mono">
+            <div className="flex items-center gap-2 bg-[#05050A] p-1.5 rounded-xl border border-white/5 text-[11px] font-mono shadow-inner">
               {["all", "posted", "pending", "failed"].map((st) => (
                 <button
                   key={st}
                   onClick={() => setFilter(st)}
-                  className={`px-3 py-1 rounded-md transition-colors capitalize ${
+                  className={`px-4 py-1.5 rounded-lg transition-all capitalize ${
                     filter === st 
-                      ? "bg-white/5 text-white font-medium border border-white/5" 
-                      : "text-[#8B93A7] hover:text-white"
+                      ? "bg-white/10 text-white font-medium border border-white/5 shadow-md" 
+                      : "text-[#A1A1AA] hover:text-white hover:bg-white/5"
                   }`}
                 >
                   {st}
@@ -290,7 +294,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="space-y-2.5">
+          <div className="space-y-3.5">
             {filteredVariants.slice(0, 10).map((v) => {
               const plat = PLATFORM_META[v.platform] || { name: "Unknown", icon: Globe, color: "text-white", bg: "bg-white/10", border: "border-white/20" };
               const Icon = plat.icon;
@@ -299,88 +303,91 @@ export default function Dashboard() {
               return (
                 <div 
                   key={v.id} 
-                  className={`rounded-xl border transition-all duration-300 ${
+                  className={`rounded-2xl border transition-all duration-300 overflow-hidden ${
                     isExpanded 
-                      ? "bg-white/[0.03] border-white/10" 
-                      : "bg-[#0C0F16]/40 border-white/5 hover:border-white/10"
+                      ? "bg-white/[0.04] border-white/10 shadow-lg" 
+                      : "bg-[#05050A]/40 border-white/5 hover:border-white/10 hover:bg-white/[0.02]"
                   }`}
                 >
                   {/* Summary Bar */}
                   <div 
                     onClick={() => setExpandedPost(isExpanded ? null : v.id)}
-                    className="flex items-center justify-between gap-4 px-4 py-3.5 cursor-pointer select-none"
+                    className="flex items-center justify-between gap-4 px-5 py-4 cursor-pointer select-none"
                   >
-                    <div className="flex items-center gap-3 min-w-0 flex-1">
-                      <div className={`p-2 rounded-lg ${plat.bg} ${plat.border} ${plat.color} shrink-0`}>
-                        <Icon size={14} />
+                    <div className="flex items-center gap-4 min-w-0 flex-1">
+                      <div className={`p-2.5 rounded-xl ${plat.bg} ${plat.border} ${plat.color} shrink-0`}>
+                        <Icon size={16} />
                       </div>
-                      <p className="text-xs text-white font-medium truncate flex-1 leading-relaxed">
+                      <p className="text-[13px] text-white font-medium truncate flex-1 leading-relaxed">
                         {v.content}
                       </p>
                     </div>
 
-                    <div className="flex items-center gap-3 shrink-0">
-                      <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full ${
+                    <div className="flex items-center gap-4 shrink-0">
+                      <span className={`text-[10px] font-mono px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm ${
                         v.publish_status === "posted"
-                          ? "bg-[#43FFB0]/10 text-[#43FFB0] border border-[#43FFB0]/20"
+                          ? "bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/30"
                           : v.publish_status === "failed"
-                          ? "bg-[#FF5C7A]/10 text-[#FF5C7A] border border-[#FF5C7A]/20"
-                          : "bg-white/[0.04] text-[#8B93A7] border border-white/5"
+                          ? "bg-[#FF2A5F]/10 text-[#FF2A5F] border border-[#FF2A5F]/30"
+                          : "bg-white/[0.04] text-[#A1A1AA] border border-white/10"
                       }`}>
+                        {v.publish_status === "posted" && <div className="w-1.5 h-1.5 rounded-full bg-[#00E5FF]" />}
+                        {v.publish_status === "failed" && <div className="w-1.5 h-1.5 rounded-full bg-[#FF2A5F]" />}
+                        {v.publish_status === "pending" && <div className="w-1.5 h-1.5 rounded-full bg-[#A1A1AA]" />}
                         {v.publish_status}
                       </span>
-                      <div className="text-[#8B93A7]">
-                        {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                      <div className={`text-[#A1A1AA] transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}>
+                        <ChevronDown size={16} />
                       </div>
                     </div>
                   </div>
 
                   {/* Expanded Content Detail */}
-                  {isExpanded && (
-                    <div className="px-4 pb-4 pt-1 border-t border-white/5 space-y-3.5">
-                      <div className="space-y-1">
-                        <p className="text-[10px] font-mono text-[#5C6478] uppercase tracking-wider">Generated Variant Caption</p>
-                        <p className="text-xs text-[#E4E7EC] leading-relaxed bg-[#06080C]/40 p-3 rounded-lg border border-white/5 font-mono whitespace-pre-wrap">
+                  <div className={`transition-all duration-300 ease-in-out ${isExpanded ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"}`}>
+                    <div className="px-5 pb-5 pt-2 border-t border-white/5 space-y-4 bg-black/20">
+                      <div className="space-y-2">
+                        <p className="text-[10px] font-mono text-[#52525B] uppercase tracking-wider">Generated Variant Caption</p>
+                        <p className="text-[13px] text-[#F8F9FA] leading-relaxed bg-[#05050A]/80 p-4 rounded-xl border border-white/5 font-mono whitespace-pre-wrap shadow-inner">
                           {v.content}
                         </p>
                       </div>
 
                       {v.hashtags && v.hashtags.length > 0 && (
-                        <div className="flex flex-wrap gap-1.5">
+                        <div className="flex flex-wrap gap-2">
                           {v.hashtags.map((tag) => (
-                            <span key={tag} className="text-[10px] font-mono text-[#8B7CFF] bg-[#8B7CFF]/5 px-2 py-0.5 rounded border border-[#8B7CFF]/15">
+                            <span key={tag} className="text-[11px] font-mono text-[#D900FF] bg-[#D900FF]/10 px-2.5 py-1 rounded-lg border border-[#D900FF]/20">
                               #{tag}
                             </span>
                           ))}
                         </div>
                       )}
 
-                      <div className="flex flex-wrap items-center justify-between text-[10px] font-mono text-[#5C6478] gap-3 pt-2">
+                      <div className="flex flex-wrap items-center justify-between text-[11px] font-mono text-[#52525B] gap-4 pt-3 border-t border-white/5 mt-2">
                         <span>Created: {new Date(v.created_at || Date.now()).toLocaleString()}</span>
                         {v.posted_at && <span>Broadcasted: {new Date(v.posted_at).toLocaleString()}</span>}
                         {v.error_message && (
-                          <span className="text-[#FF5C7A] font-semibold flex items-center gap-1">
-                            <AlertCircle size={10} /> {v.error_message}
+                          <span className="text-[#FF2A5F] font-semibold flex items-center gap-1.5">
+                            <AlertCircle size={12} /> {v.error_message}
                           </span>
                         )}
                         {v.platform_post_id && (
                           <a 
                             href="#" 
                             onClick={(e) => e.preventDefault()} 
-                            className="text-[#43FFB0] hover:underline flex items-center gap-1.5"
+                            className="text-[#00E5FF] hover:text-white transition-colors flex items-center gap-1.5 bg-[#00E5FF]/10 px-3 py-1 rounded-lg border border-[#00E5FF]/20"
                           >
-                            View Post <ExternalLink size={10} />
+                            View Post <ExternalLink size={12} />
                           </a>
                         )}
                       </div>
                     </div>
-                  )}
+                  </div>
                 </div>
               );
             })}
 
             {filteredVariants.length === 0 && (
-              <div className="text-center py-16 text-xs text-[#5C6478] border border-dashed border-white/5 rounded-xl">
+              <div className="text-center py-16 text-sm font-mono text-[#52525B] border border-dashed border-white/10 rounded-2xl bg-white/[0.01]">
                 No logs matching filter "{filter}". Head to the Composer to deploy variants.
               </div>
             )}

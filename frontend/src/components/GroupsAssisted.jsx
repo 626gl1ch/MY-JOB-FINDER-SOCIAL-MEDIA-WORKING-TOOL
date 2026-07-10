@@ -13,12 +13,12 @@ import {
 import { api } from "../api";
 
 const STATUS_CONFIG = {
-  queued: { label: "queued", styles: "bg-white/[0.04] text-[#8B93A7] border-white/5" },
-  in_progress: { label: "running script", styles: "bg-[#8B7CFF]/10 text-[#8B7CFF] border-[#8B7CFF]/20" },
-  awaiting_manual_click: { label: "awaiting post click", styles: "bg-[#ffac0a]/10 text-[#ffac0a] border-[#ffac0a]/20" },
-  needs_login: { label: "facebook login needed", styles: "bg-[#FF5C7A]/10 text-[#FF5C7A] border-[#FF5C7A]/20" },
-  done: { label: "completed", styles: "bg-[#43FFB0]/10 text-[#43FFB0] border-[#43FFB0]/20" },
-  failed: { label: "script failed", styles: "bg-[#FF5C7A]/10 text-[#FF5C7A] border-[#FF5C7A]/20" },
+  queued: { label: "queued", styles: "bg-white/[0.04] text-[#A1A1AA] border-white/5" },
+  in_progress: { label: "running script", styles: "bg-[#D900FF]/10 text-[#D900FF] border-[#D900FF]/20" },
+  awaiting_manual_click: { label: "awaiting post click", styles: "bg-[#F59E0B]/10 text-[#F59E0B] border-[#F59E0B]/20" },
+  needs_login: { label: "facebook login needed", styles: "bg-[#FF2A5F]/10 text-[#FF2A5F] border-[#FF2A5F]/20" },
+  done: { label: "completed", styles: "bg-[#00E5FF]/10 text-[#00E5FF] border-[#00E5FF]/20" },
+  failed: { label: "script failed", styles: "bg-[#FF2A5F]/10 text-[#FF2A5F] border-[#FF2A5F]/20" },
 };
 
 export default function GroupsAssisted() {
@@ -120,43 +120,43 @@ export default function GroupsAssisted() {
   };
 
   return (
-    <div className="p-8 relative min-h-screen">
+    <div className="p-6 md:p-10 relative min-h-screen">
       {/* Background glow */}
-      <div className="glow-blob w-[500px] h-[500px] bg-[#8B7CFF]/4 -top-20 -right-20 opacity-60" />
+      <div className="glow-blob w-[500px] h-[500px] bg-[#00E5FF]/5 -top-20 -right-20 opacity-60" />
 
       {/* Header */}
-      <div className="space-y-2 mb-8">
-        <div className="flex items-center gap-2.5 text-[10px] font-mono uppercase tracking-widest text-[#8B7CFF] bg-[#8B7CFF]/5 px-3 py-1.5 rounded-full border border-[#8B7CFF]/15 w-fit">
-          <Users size={12} className="text-[#8B7CFF]" /> Facebook Groups
+      <div className="space-y-2 mb-10 max-w-7xl mx-auto relative z-10">
+        <div className="flex items-center gap-2.5 text-[10px] font-mono uppercase tracking-widest text-[#00E5FF] bg-[#00E5FF]/5 px-3.5 py-1.5 rounded-full border border-[#00E5FF]/15 w-fit shadow-[0_0_15px_rgba(0,229,255,0.1)]">
+          <Users size={14} className="text-[#00E5FF]" /> Facebook Groups
         </div>
-        <h1 className="font-display text-2xl font-bold tracking-tight text-white mt-1.5">
+        <h1 className="font-display text-4xl font-bold tracking-tight text-white mt-2">
           Assisted Group Automation
         </h1>
-        <p className="text-[#8B93A7] text-xs max-w-xl">
+        <p className="text-[#A1A1AA] text-[13px] max-w-2xl mt-1.5 font-light leading-relaxed">
           Meta restricts direct API posting in groups. This pipeline opens Chrome visibly, loads your local logged-in session, types the content, and waits for you to review and click Post.
         </p>
       </div>
 
       {isMobileApp && (
-        <div className="mb-8 p-4 rounded-xl bg-[#FFac0a]/10 border border-[#FFac0a]/20 text-[#FFac0a] text-sm flex gap-3 items-start">
-          <AlertTriangle size={18} className="shrink-0 mt-0.5" />
+        <div className="mb-10 max-w-7xl mx-auto p-5 rounded-2xl bg-[#F59E0B]/10 border border-[#F59E0B]/20 text-[#F59E0B] text-sm flex gap-4 items-start shadow-inner">
+          <AlertTriangle size={20} className="shrink-0 mt-0.5 drop-shadow-[0_0_8px_rgba(245,158,11,0.6)]" />
           <div>
-            <p className="font-semibold mb-1">Desktop Only Feature</p>
-            <p className="text-xs opacity-90">Meta prevents auto-posting to groups. This feature launches a visible Chrome browser to autofill your post for manual review. It only works when running the web dashboard on your desktop PC where the backend is hosted.</p>
+            <p className="font-bold mb-1">Desktop Only Feature</p>
+            <p className="text-[13px] opacity-90 leading-relaxed">Meta prevents auto-posting to groups. This feature launches a visible Chrome browser to autofill your post for manual review. It only works when running the web dashboard on your desktop PC where the backend is hosted.</p>
           </div>
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-8 items-start relative z-10">
         
         {/* Left: Queue List */}
-        <div className="lg:col-span-3 space-y-4">
+        <div className="lg:col-span-3 space-y-6">
           <div className="flex items-center justify-between">
-            <h3 className="text-xs font-semibold text-white uppercase tracking-wider font-mono">Posting Queue</h3>
-            <span className="text-[10px] text-[#5C6478] font-mono">Refreshes automatically</span>
+            <h3 className="text-[13px] font-bold text-white uppercase tracking-wider font-mono">Posting Queue</h3>
+            <span className="text-[10px] text-[#52525B] font-mono">Refreshes automatically</span>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-4">
             {queue.map((item) => {
               const status = STATUS_CONFIG[item.status] || { label: "unknown", styles: "bg-white/5 text-white" };
               const isRunning = runningId === item.id;
@@ -164,26 +164,26 @@ export default function GroupsAssisted() {
               return (
                 <div 
                   key={item.id}
-                  className="glass-panel rounded-2xl p-5 border border-white/5 hover:border-white/10 transition-all duration-300 space-y-3.5"
+                  className="glass-panel rounded-3xl p-6 border border-white/5 hover:border-white/10 transition-all duration-300 space-y-4 hover:shadow-lg"
                 >
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="space-y-1 min-w-0">
-                      <p className="text-xs text-white leading-relaxed line-clamp-3 bg-[#06080C]/30 p-3 rounded-lg border border-white/5 font-mono">
+                  <div className="flex items-start justify-between gap-5">
+                    <div className="space-y-1.5 min-w-0 flex-1">
+                      <p className="text-[13px] text-white leading-relaxed line-clamp-3 bg-[#05050A]/40 p-4 rounded-2xl border border-white/5 font-mono shadow-inner">
                         {item.post_variants?.content}
                       </p>
-                      <p className="text-[10px] font-mono text-[#8B7CFF] hover:underline truncate pt-1 flex items-center gap-1.5">
-                        <Clock size={10} /> {item.group_url} <ExternalLink size={8} />
+                      <p className="text-[11px] font-mono text-[#00E5FF] hover:underline truncate pt-2 flex items-center gap-1.5 hover:drop-shadow-[0_0_8px_rgba(0,229,255,0.8)] transition-all">
+                        <Clock size={12} /> {item.group_url} <ExternalLink size={10} />
                       </p>
                     </div>
 
-                    <span className={`text-[9px] font-mono px-2 py-0.5 rounded-full uppercase shrink-0 font-semibold border ${status.styles}`}>
+                    <span className={`text-[10px] font-mono px-3 py-1 rounded-full uppercase shrink-0 font-bold border tracking-wider shadow-sm ${status.styles}`}>
                       {status.label}
                     </span>
                   </div>
 
                   {/* Actions */}
-                  <div className="flex items-center justify-between pt-3.5 border-t border-white/5">
-                    <span className="text-[9px] font-mono text-[#5C6478]">
+                  <div className="flex items-center justify-between pt-4 border-t border-white/5">
+                    <span className="text-[10px] font-mono text-[#52525B]">
                       Queued: {new Date(item.created_at || Date.now()).toLocaleTimeString()}
                     </span>
 
@@ -192,13 +192,13 @@ export default function GroupsAssisted() {
                         <button
                           onClick={() => run(item.id, item)}
                           disabled={runningId !== null || isMobileApp}
-                          className={`flex items-center gap-1.5 text-xs font-semibold px-3.5 py-1.5 rounded-xl border transition-colors ${
+                          className={`flex items-center gap-2 text-[12px] font-bold px-4 py-2 rounded-xl border transition-all ${
                             isMobileApp 
-                              ? "text-[#8B93A7] bg-white/5 border-white/10 opacity-50 cursor-not-allowed" 
-                              : "text-[#43FFB0] bg-[#43FFB0]/10 border-[#43FFB0]/20 hover:bg-[#43FFB0]/20 disabled:opacity-40"
+                              ? "text-[#52525B] bg-white/5 border-white/10 opacity-50 cursor-not-allowed" 
+                              : "text-[#05050A] bg-gradient-to-r from-[#00E5FF] to-[#D900FF] border-transparent hover:scale-[1.02] active:scale-[0.98] disabled:opacity-40 hover:shadow-[0_0_15px_rgba(0,229,255,0.4)]"
                           }`}
                         >
-                          {isRunning ? <RefreshCw size={12} className="animate-spin" /> : <PlayCircle size={13} />}
+                          {isRunning ? <RefreshCw size={14} className="animate-spin" /> : <PlayCircle size={15} />}
                           <span>{isMobileApp ? "Desktop Only" : (isRunning ? "Running script..." : "Open & autofill")}</span>
                         </button>
                       )}
@@ -206,9 +206,9 @@ export default function GroupsAssisted() {
                       {item.status === "awaiting_manual_click" && (
                         <button
                           onClick={() => confirm(item.id)}
-                          className="flex items-center gap-1.5 text-xs font-semibold text-[#43FFB0] bg-[#43FFB0]/10 px-3.5 py-1.5 rounded-xl border border-[#43FFB0]/20 hover:bg-[#43FFB0]/20 transition-colors"
+                          className="flex items-center gap-1.5 text-[12px] font-bold text-[#00E5FF] bg-[#00E5FF]/10 px-4 py-2 rounded-xl border border-[#00E5FF]/20 hover:bg-[#00E5FF]/20 transition-all hover:shadow-[0_0_10px_rgba(0,229,255,0.2)]"
                         >
-                          <CheckCircle2 size={13} />
+                          <CheckCircle2 size={15} />
                           <span>Mark completed</span>
                         </button>
                       )}
@@ -217,9 +217,9 @@ export default function GroupsAssisted() {
                         <button
                           onClick={() => run(item.id, item)}
                           disabled={runningId !== null}
-                          className="flex items-center gap-1.5 text-xs font-semibold text-[#8B93A7] hover:text-white transition-colors"
+                          className="flex items-center gap-1.5 text-[12px] font-bold text-[#A1A1AA] hover:text-white transition-colors bg-white/5 px-4 py-2 rounded-xl border border-white/5 hover:border-white/10"
                         >
-                          <PlayCircle size={13} />
+                          <PlayCircle size={15} />
                           <span>Rerun script</span>
                         </button>
                       )}
@@ -231,7 +231,7 @@ export default function GroupsAssisted() {
             })}
 
             {queue.length === 0 && (
-              <div className="text-center py-20 text-xs text-[#5C6478] border border-dashed border-white/5 rounded-2xl glass-panel">
+              <div className="text-center py-24 text-[13px] text-[#52525B] border border-dashed border-white/10 rounded-3xl glass-panel font-medium">
                 No items queued. Generate a FB Group variant in the Composer to trigger assisted posting.
               </div>
             )}
@@ -239,34 +239,34 @@ export default function GroupsAssisted() {
         </div>
 
         {/* Right: Terminal Console */}
-        <div className="lg:col-span-2 space-y-4">
+        <div className="lg:col-span-2 space-y-6">
           <div className="flex items-center justify-between">
-            <h3 className="text-xs font-semibold text-white uppercase tracking-wider font-mono flex items-center gap-1.5">
-              <Terminal size={12} className="text-[#43FFB0]" /> Chrome Console stdout
+            <h3 className="text-[13px] font-bold text-white uppercase tracking-wider font-mono flex items-center gap-2">
+              <Terminal size={14} className="text-[#00E5FF] drop-shadow-[0_0_5px_rgba(0,229,255,0.8)]" /> Chrome Console stdout
             </h3>
-            <span className="w-2 h-2 rounded-full bg-[#43FFB0] pulse-dot" />
+            <span className="w-2.5 h-2.5 rounded-full bg-[#00E5FF] pulse-dot shadow-[0_0_8px_rgba(0,229,255,0.8)]" />
           </div>
 
-          <div className="glass-panel bg-black rounded-2xl border border-white/10 p-5 font-mono text-[10px] text-[#43FFB0] min-h-[350px] flex flex-col justify-between shadow-2xl">
+          <div className="glass-panel bg-[#030303]/90 rounded-3xl border border-white/10 p-6 font-mono text-[11px] text-[#00E5FF] min-h-[400px] flex flex-col justify-between shadow-[0_0_30px_rgba(0,0,0,0.5)]">
             {/* Logs List */}
-            <div className="space-y-2 h-64 overflow-y-auto scrollbar-thin select-text">
+            <div className="space-y-2 h-72 overflow-y-auto scrollbar-thin select-text">
               {terminalLogs.map((log, idx) => (
-                <div key={idx} className="leading-relaxed">
+                <div key={idx} className="leading-relaxed break-words">
                   {log}
                 </div>
               ))}
               <div className="terminal-cursor" />
             </div>
 
-            <div className="border-t border-white/10 pt-3 flex justify-between text-[#5C6478] text-[8px] uppercase select-none">
+            <div className="border-t border-white/10 pt-4 flex justify-between text-[#52525B] text-[9px] uppercase select-none tracking-widest font-bold">
               <span>local-autofill-driver v1.0</span>
               <span>chrome-session: saved-profile</span>
             </div>
           </div>
 
           {/* Quick Tip info card */}
-          <div className="p-4 rounded-xl bg-white/[0.01] border border-white/5 text-[11px] text-[#8B93A7] leading-relaxed flex gap-2">
-            <Info size={14} className="text-[#8B7CFF] shrink-0 mt-0.5" />
+          <div className="p-5 rounded-2xl bg-white/[0.02] border border-white/5 text-[12px] text-[#A1A1AA] leading-relaxed flex gap-3 shadow-inner">
+            <Info size={16} className="text-[#D900FF] shrink-0 mt-0.5 drop-shadow-[0_0_5px_rgba(217,0,255,0.6)]" />
             <p>
               Cookies are stored locally on your machine in the `/backend/browser-profile` folder. Logging in once guarantees persistent login checks on subsequent automated script runs.
             </p>

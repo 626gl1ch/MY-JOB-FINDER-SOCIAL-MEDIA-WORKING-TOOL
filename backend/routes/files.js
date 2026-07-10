@@ -22,9 +22,14 @@ router.post("/upload", async (req, res) => {
 
   const file = req.files.file;
   const folder = req.body.folder || "general";
-  const path = `${folder}/${Date.now()}-${file.name}`;
+  const path = `${folder}/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
 
   try {
+    // Ensure bucket exists
+    const { data: buckets } = await supabase.storage.listBuckets();
+    if (!buckets?.find((b) => b.name === "content-vault")) {
+      await supabase.storage.createBucket("content-vault", { public: true });
+    }
     const { error: uploadErr } = await supabase.storage
       .from("content-vault")
       .upload(path, file.data, { contentType: file.mimetype });
