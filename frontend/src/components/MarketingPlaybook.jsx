@@ -115,21 +115,21 @@ export default function MarketingPlaybook() {
   }, []);
 
   return (
-    <div className="flex-1 h-full flex flex-col overflow-hidden relative min-h-screen">
+    <div className="flex-1 h-full flex flex-col overflow-hidden relative min-h-screen bg-[#121215] pb-32">
       {/* Background glow for consistency with the rest of the app */}
       <div className="absolute inset-0 z-0 pointer-events-none">
-        <div className="glow-blob w-[500px] h-[500px] bg-[#D900FF]/10 top-0 left-1/4 opacity-40" />
+        <div className="glow-blob w-[500px] h-[500px] bg-accent/10 top-0 left-1/4 opacity-40" />
       </div>
 
-      <div className="flex items-center justify-between px-8 py-6 border-b border-white/5 bg-[#05050A]/80 backdrop-blur-xl shrink-0 relative z-10">
+      <div className="flex items-center justify-between px-8 py-6 border-b border-white/5 bg-surface/80 backdrop-blur-xl shrink-0 relative z-10">
         <div>
-          <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-[#D900FF] mb-2">
-            <BookOpen size={14} className="drop-shadow-[0_0_8px_rgba(217,0,255,0.8)]" /> Library
+          <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-accent mb-2">
+            <BookOpen size={14} /> Library
           </div>
           <h1 className="font-display text-2xl font-bold text-white flex items-center gap-2">
             Marketing Playbook
           </h1>
-          <p className="text-sm text-[#A1A1AA] mt-1 font-medium">
+          <p className="text-sm text-muted mt-1 font-medium">
             Copy and paste high-converting templates natively.
           </p>
         </div>
@@ -137,7 +137,7 @@ export default function MarketingPlaybook() {
       
       <div className="flex-1 w-full relative z-10 overflow-hidden bg-black/20">
         {loading ? (
-          <div className="absolute inset-0 flex items-center justify-center text-xs text-[#A1A1AA] font-mono">
+          <div className="absolute inset-0 flex items-center justify-center text-xs text-muted font-mono">
             Loading playbook...
           </div>
         ) : (

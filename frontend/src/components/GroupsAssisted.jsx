@@ -13,12 +13,12 @@ import {
 import { api } from "../api";
 
 const STATUS_CONFIG = {
-  queued: { label: "queued", styles: "bg-white/[0.04] text-[#A1A1AA] border-white/5" },
-  in_progress: { label: "running script", styles: "bg-[#D900FF]/10 text-[#D900FF] border-[#D900FF]/20" },
+  queued: { label: "queued", styles: "bg-white/5 text-muted border-white/5" },
+  in_progress: { label: "running script", styles: "bg-accent/10 text-accent border-accent/20" },
   awaiting_manual_click: { label: "awaiting post click", styles: "bg-[#F59E0B]/10 text-[#F59E0B] border-[#F59E0B]/20" },
-  needs_login: { label: "facebook login needed", styles: "bg-[#FF2A5F]/10 text-[#FF2A5F] border-[#FF2A5F]/20" },
-  done: { label: "completed", styles: "bg-[#00E5FF]/10 text-[#00E5FF] border-[#00E5FF]/20" },
-  failed: { label: "script failed", styles: "bg-[#FF2A5F]/10 text-[#FF2A5F] border-[#FF2A5F]/20" },
+  needs_login: { label: "facebook login needed", styles: "bg-alert/10 text-alert border-alert/20" },
+  done: { label: "completed", styles: "bg-signal/10 text-signal border-signal/20" },
+  failed: { label: "script failed", styles: "bg-alert/10 text-alert border-alert/20" },
 };
 
 export default function GroupsAssisted() {
@@ -120,40 +120,40 @@ export default function GroupsAssisted() {
   };
 
   return (
-    <div className="p-6 md:p-10 relative min-h-screen">
+    <div className="p-5 md:p-8 relative min-h-screen bg-[#121215] pb-32">
       {/* Background glow */}
-      <div className="glow-blob w-[500px] h-[500px] bg-[#00E5FF]/5 -top-20 -right-20 opacity-60" />
+      <div className="glow-blob w-[500px] h-[500px] bg-accent/10 -top-20 -right-20 opacity-60" />
 
       {/* Header */}
-      <div className="space-y-2 mb-10 max-w-7xl mx-auto relative z-10">
-        <div className="flex items-center gap-2.5 text-[10px] font-mono uppercase tracking-widest text-[#00E5FF] bg-[#00E5FF]/5 px-3.5 py-1.5 rounded-full border border-[#00E5FF]/15 w-fit shadow-[0_0_15px_rgba(0,229,255,0.1)]">
-          <Users size={14} className="text-[#00E5FF]" /> Facebook Groups
+      <div className="space-y-2 mb-8 max-w-6xl mx-auto relative z-10">
+        <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-accent bg-accent/10 px-3.5 py-1.5 rounded-full border border-accent/20 w-fit">
+          <Users size={14} className="text-accent" /> Facebook Groups
         </div>
-        <h1 className="font-display text-4xl font-bold tracking-tight text-white mt-2">
+        <h1 className="font-display text-3xl font-bold tracking-tight text-white mt-2">
           Assisted Group Automation
         </h1>
-        <p className="text-[#A1A1AA] text-[13px] max-w-2xl mt-1.5 font-light leading-relaxed">
+        <p className="text-muted text-[13px] max-w-2xl mt-1.5 font-light leading-relaxed">
           Meta restricts direct API posting in groups. This pipeline opens Chrome visibly, loads your local logged-in session, types the content, and waits for you to review and click Post.
         </p>
       </div>
 
       {isMobileApp && (
-        <div className="mb-10 max-w-7xl mx-auto p-5 rounded-2xl bg-[#F59E0B]/10 border border-[#F59E0B]/20 text-[#F59E0B] text-sm flex gap-4 items-start shadow-inner">
-          <AlertTriangle size={20} className="shrink-0 mt-0.5 drop-shadow-[0_0_8px_rgba(245,158,11,0.6)]" />
+        <div className="mb-8 max-w-6xl mx-auto p-5 rounded-[24px] bg-alert/5 border border-alert/20 text-alert text-sm flex gap-4 items-start shadow-inner relative z-10">
+          <AlertTriangle size={20} className="shrink-0 mt-0.5" />
           <div>
-            <p className="font-bold mb-1">Desktop Only Feature</p>
+            <p className="font-bold mb-1 tracking-wide">Desktop Only Feature</p>
             <p className="text-[13px] opacity-90 leading-relaxed">Meta prevents auto-posting to groups. This feature launches a visible Chrome browser to autofill your post for manual review. It only works when running the web dashboard on your desktop PC where the backend is hosted.</p>
           </div>
         </div>
       )}
 
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-8 items-start relative z-10">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-8 items-start relative z-10">
         
         {/* Left: Queue List */}
         <div className="lg:col-span-3 space-y-6">
-          <div className="flex items-center justify-between">
-            <h3 className="text-[13px] font-bold text-white uppercase tracking-wider font-mono">Posting Queue</h3>
-            <span className="text-[10px] text-[#52525B] font-mono">Refreshes automatically</span>
+          <div className="flex items-center justify-between px-2">
+            <h3 className="text-base font-bold text-white tracking-tight">Posting Queue</h3>
+            <span className="text-xs text-muted">Refreshes automatically</span>
           </div>
 
           <div className="space-y-4">
@@ -164,26 +164,26 @@ export default function GroupsAssisted() {
               return (
                 <div 
                   key={item.id}
-                  className="glass-panel rounded-3xl p-6 border border-white/5 hover:border-white/10 transition-all duration-300 space-y-4 hover:shadow-lg"
+                  className="bg-surface rounded-[32px] p-6 border border-white/5 shadow-xl transition-all duration-300 space-y-5"
                 >
                   <div className="flex items-start justify-between gap-5">
-                    <div className="space-y-1.5 min-w-0 flex-1">
-                      <p className="text-[13px] text-white leading-relaxed line-clamp-3 bg-[#05050A]/40 p-4 rounded-2xl border border-white/5 font-mono shadow-inner">
+                    <div className="space-y-2 min-w-0 flex-1">
+                      <p className="text-[13px] text-white leading-relaxed line-clamp-3 bg-[#121215] p-5 rounded-[20px] border border-transparent shadow-inner">
                         {item.post_variants?.content}
                       </p>
-                      <p className="text-[11px] font-mono text-[#00E5FF] hover:underline truncate pt-2 flex items-center gap-1.5 hover:drop-shadow-[0_0_8px_rgba(0,229,255,0.8)] transition-all">
+                      <p className="text-[11px] font-mono text-accent hover:underline truncate px-2 flex items-center gap-1.5 transition-all">
                         <Clock size={12} /> {item.group_url} <ExternalLink size={10} />
                       </p>
                     </div>
 
-                    <span className={`text-[10px] font-mono px-3 py-1 rounded-full uppercase shrink-0 font-bold border tracking-wider shadow-sm ${status.styles}`}>
+                    <span className={`text-[10px] font-mono px-3 py-1.5 rounded-full uppercase shrink-0 font-bold border tracking-wider shadow-sm ${status.styles}`}>
                       {status.label}
                     </span>
                   </div>
 
                   {/* Actions */}
                   <div className="flex items-center justify-between pt-4 border-t border-white/5">
-                    <span className="text-[10px] font-mono text-[#52525B]">
+                    <span className="text-[10px] font-mono text-muted px-2">
                       Queued: {new Date(item.created_at || Date.now()).toLocaleTimeString()}
                     </span>
 
@@ -192,13 +192,13 @@ export default function GroupsAssisted() {
                         <button
                           onClick={() => run(item.id, item)}
                           disabled={runningId !== null || isMobileApp}
-                          className={`flex items-center gap-2 text-[12px] font-bold px-4 py-2 rounded-xl border transition-all ${
+                          className={`flex items-center gap-2 text-[12px] font-bold px-5 py-2.5 rounded-full transition-all ${
                             isMobileApp 
-                              ? "text-[#52525B] bg-white/5 border-white/10 opacity-50 cursor-not-allowed" 
-                              : "text-[#05050A] bg-gradient-to-r from-[#00E5FF] to-[#D900FF] border-transparent hover:scale-[1.02] active:scale-[0.98] disabled:opacity-40 hover:shadow-[0_0_15px_rgba(0,229,255,0.4)]"
+                              ? "text-muted bg-white/5 border-white/10 opacity-50 cursor-not-allowed" 
+                              : "text-[#121215] bg-accent hover:scale-105 active:scale-95 disabled:opacity-40 shadow-lg"
                           }`}
                         >
-                          {isRunning ? <RefreshCw size={14} className="animate-spin" /> : <PlayCircle size={15} />}
+                          {isRunning ? <RefreshCw size={16} className="animate-spin" /> : <PlayCircle size={16} />}
                           <span>{isMobileApp ? "Desktop Only" : (isRunning ? "Running script..." : "Open & autofill")}</span>
                         </button>
                       )}
@@ -206,9 +206,9 @@ export default function GroupsAssisted() {
                       {item.status === "awaiting_manual_click" && (
                         <button
                           onClick={() => confirm(item.id)}
-                          className="flex items-center gap-1.5 text-[12px] font-bold text-[#00E5FF] bg-[#00E5FF]/10 px-4 py-2 rounded-xl border border-[#00E5FF]/20 hover:bg-[#00E5FF]/20 transition-all hover:shadow-[0_0_10px_rgba(0,229,255,0.2)]"
+                          className="flex items-center gap-1.5 text-[12px] font-bold text-[#121215] bg-signal px-5 py-2.5 rounded-full hover:scale-105 transition-all shadow-lg"
                         >
-                          <CheckCircle2 size={15} />
+                          <CheckCircle2 size={16} />
                           <span>Mark completed</span>
                         </button>
                       )}
@@ -217,9 +217,9 @@ export default function GroupsAssisted() {
                         <button
                           onClick={() => run(item.id, item)}
                           disabled={runningId !== null}
-                          className="flex items-center gap-1.5 text-[12px] font-bold text-[#A1A1AA] hover:text-white transition-colors bg-white/5 px-4 py-2 rounded-xl border border-white/5 hover:border-white/10"
+                          className="flex items-center gap-1.5 text-[12px] font-bold text-white bg-white/10 hover:bg-white/20 transition-colors px-5 py-2.5 rounded-full"
                         >
-                          <PlayCircle size={15} />
+                          <PlayCircle size={16} />
                           <span>Rerun script</span>
                         </button>
                       )}
@@ -231,7 +231,7 @@ export default function GroupsAssisted() {
             })}
 
             {queue.length === 0 && (
-              <div className="text-center py-24 text-[13px] text-[#52525B] border border-dashed border-white/10 rounded-3xl glass-panel font-medium">
+              <div className="text-center py-24 text-[13px] text-muted border border-dashed border-white/5 rounded-[32px] bg-surface/50 font-medium">
                 No items queued. Generate a FB Group variant in the Composer to trigger assisted posting.
               </div>
             )}
@@ -240,14 +240,14 @@ export default function GroupsAssisted() {
 
         {/* Right: Terminal Console */}
         <div className="lg:col-span-2 space-y-6">
-          <div className="flex items-center justify-between">
-            <h3 className="text-[13px] font-bold text-white uppercase tracking-wider font-mono flex items-center gap-2">
-              <Terminal size={14} className="text-[#00E5FF] drop-shadow-[0_0_5px_rgba(0,229,255,0.8)]" /> Chrome Console stdout
+          <div className="flex items-center justify-between px-2">
+            <h3 className="text-base font-bold text-white tracking-tight flex items-center gap-2">
+              <Terminal size={16} className="text-accent" /> Console Output
             </h3>
-            <span className="w-2.5 h-2.5 rounded-full bg-[#00E5FF] pulse-dot shadow-[0_0_8px_rgba(0,229,255,0.8)]" />
+            <span className="w-2.5 h-2.5 rounded-full bg-accent animate-pulse shadow-[0_0_8px_rgba(176,139,255,0.6)]" />
           </div>
 
-          <div className="glass-panel bg-[#030303]/90 rounded-3xl border border-white/10 p-6 font-mono text-[11px] text-[#00E5FF] min-h-[400px] flex flex-col justify-between shadow-[0_0_30px_rgba(0,0,0,0.5)]">
+          <div className="bg-[#121215] rounded-[32px] border border-white/5 p-6 font-mono text-[11px] text-muted min-h-[400px] flex flex-col justify-between shadow-inner">
             {/* Logs List */}
             <div className="space-y-2 h-72 overflow-y-auto scrollbar-thin select-text">
               {terminalLogs.map((log, idx) => (
@@ -255,18 +255,18 @@ export default function GroupsAssisted() {
                   {log}
                 </div>
               ))}
-              <div className="terminal-cursor" />
+              <div className="w-2 h-4 bg-accent mt-1 animate-pulse" />
             </div>
 
-            <div className="border-t border-white/10 pt-4 flex justify-between text-[#52525B] text-[9px] uppercase select-none tracking-widest font-bold">
+            <div className="border-t border-white/5 pt-4 flex justify-between text-muted/50 text-[9px] uppercase select-none tracking-widest font-bold">
               <span>local-autofill-driver v1.0</span>
-              <span>chrome-session: saved-profile</span>
+              <span>chrome-session: saved</span>
             </div>
           </div>
 
           {/* Quick Tip info card */}
-          <div className="p-5 rounded-2xl bg-white/[0.02] border border-white/5 text-[12px] text-[#A1A1AA] leading-relaxed flex gap-3 shadow-inner">
-            <Info size={16} className="text-[#D900FF] shrink-0 mt-0.5 drop-shadow-[0_0_5px_rgba(217,0,255,0.6)]" />
+          <div className="p-5 rounded-[24px] bg-surface border border-white/5 text-[12px] text-muted leading-relaxed flex gap-3 shadow-xl">
+            <Info size={18} className="text-accent shrink-0 mt-0.5" />
             <p>
               Cookies are stored locally on your machine in the `/backend/browser-profile` folder. Logging in once guarantees persistent login checks on subsequent automated script runs.
             </p>

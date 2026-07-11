@@ -30,7 +30,7 @@ export default function App() {
     <div className="flex h-screen bg-transparent overflow-hidden relative">
       <TermsModal />
       <Sidebar active={active} onChange={setActive} />
-      <main className="flex-1 overflow-y-auto scrollbar-thin pb-16 md:pb-0">
+      <main className="flex-1 overflow-y-auto scrollbar-thin pb-28 md:pb-0">
         <View />
       </main>
       <MobileNav active={active} onChange={setActive} />

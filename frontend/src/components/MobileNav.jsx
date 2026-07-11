@@ -12,15 +12,8 @@ import {
   BookOpen
 } from "lucide-react";
 
-const MAIN_NAV = [
-  { id: "dashboard", label: "Dashboard", icon: RadioTower },
-  { id: "chat", label: "AI Chat", icon: MessageSquare },
-  { id: "composer", label: "Composer", icon: PenSquare },
-  { id: "vault", label: "Vault", icon: FolderOpen },
-];
-
 const MORE_NAV = [
-  { id: "scheduler", label: "Scheduler", icon: CalendarClock },
+  { id: "chat", label: "AI Chat", icon: MessageSquare },
   { id: "groups", label: "Groups", icon: Users },
   { id: "playbook", label: "Playbook", icon: BookOpen },
   { id: "settings", label: "Settings", icon: SettingsIcon },
@@ -38,9 +31,9 @@ export default function MobileNav({ active, onChange }) {
     <>
       {/* More Menu Overlay */}
       {showMore && (
-        <div className="fixed inset-0 z-40 bg-black/60 backdrop-blur-md flex flex-col justify-end p-4 pb-24 animate-in fade-in duration-200">
-          <div className="bg-[#0A0A14]/80 border border-white/10 rounded-2xl p-2 space-y-1 mb-2 shadow-2xl backdrop-blur-xl">
-            <div className="px-3 py-2 text-[10px] font-mono text-[#A1A1AA] uppercase tracking-widest border-b border-white/5 mb-2">
+        <div className="fixed inset-0 z-40 bg-black/60 backdrop-blur-md flex flex-col justify-end p-4 pb-32 animate-in fade-in duration-200">
+          <div className="bg-surface/90 border border-white/5 rounded-4xl p-2 space-y-1 mb-2 shadow-2xl backdrop-blur-xl">
+            <div className="px-4 py-3 text-xs font-medium text-muted uppercase tracking-widest border-b border-white/5 mb-2">
               More Tools
             </div>
             {MORE_NAV.map((item) => {
@@ -50,13 +43,13 @@ export default function MobileNav({ active, onChange }) {
                 <button
                   key={item.id}
                   onClick={() => handleSelect(item.id)}
-                  className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm transition-colors ${
+                  className={`w-full flex items-center gap-4 px-5 py-4 rounded-3xl text-sm transition-colors ${
                     isActive
-                      ? "bg-[#00E5FF]/10 text-[#00E5FF] font-medium drop-shadow-[0_0_5px_rgba(0,229,255,0.5)]"
+                      ? "bg-accent/10 text-accent font-medium"
                       : "text-white hover:bg-white/5"
                   }`}
                 >
-                  <Icon size={18} />
+                  <Icon size={20} />
                   {item.label}
                 </button>
               );
@@ -65,36 +58,64 @@ export default function MobileNav({ active, onChange }) {
         </div>
       )}
 
-      {/* Bottom Navigation Bar */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#05050A]/70 border-t border-white/10 backdrop-blur-2xl pb-safe pt-1 px-2 flex justify-between items-center">
-        {MAIN_NAV.map((item) => {
-          const Icon = item.icon;
-          const isActive = active === item.id;
-          return (
+      {/* Bottom Floating Navigation Bar */}
+      <div className="md:hidden fixed bottom-6 left-4 right-4 z-50">
+        <nav className="bg-surface/95 border border-white/5 backdrop-blur-2xl rounded-[32px] px-2 h-[72px] flex justify-between items-center shadow-2xl">
+          {/* Left Items */}
+          <div className="flex items-center justify-evenly w-[40%]">
             <button
-              key={item.id}
-              onClick={() => handleSelect(item.id)}
-              className={`flex flex-col items-center justify-center w-16 h-14 gap-1 rounded-xl transition-colors ${
-                isActive ? "text-[#00E5FF]" : "text-[#A1A1AA]"
+              onClick={() => handleSelect("dashboard")}
+              className={`flex flex-col items-center justify-center w-full h-full gap-1.5 transition-colors ${
+                active === "dashboard" ? "text-white" : "text-muted"
               }`}
             >
-              <Icon size={20} className={isActive ? "drop-shadow-[0_0_10px_rgba(0,229,255,0.8)]" : ""} />
-              <span className="text-[9px] font-medium tracking-wide">{item.label}</span>
+              <RadioTower size={22} className={active === "dashboard" ? "drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]" : ""} />
+              <span className="text-[10px] font-medium tracking-wide">Home</span>
             </button>
-          );
-        })}
+            <button
+              onClick={() => handleSelect("vault")}
+              className={`flex flex-col items-center justify-center w-full h-full gap-1.5 transition-colors ${
+                active === "vault" ? "text-white" : "text-muted"
+              }`}
+            >
+              <FolderOpen size={22} className={active === "vault" ? "drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]" : ""} />
+              <span className="text-[10px] font-medium tracking-wide">Vault</span>
+            </button>
+          </div>
 
-        {/* More Button */}
-        <button
-          onClick={() => setShowMore(!showMore)}
-          className={`flex flex-col items-center justify-center w-16 h-14 gap-1 rounded-xl transition-colors ${
-            showMore ? "text-white" : "text-[#A1A1AA]"
-          }`}
-        >
-          {showMore ? <X size={20} /> : <Menu size={20} />}
-          <span className="text-[9px] font-medium tracking-wide">More</span>
-        </button>
-      </nav>
+          {/* Center FAB Overlay */}
+          <div className="absolute left-1/2 -translate-x-1/2 -top-6">
+            <button
+              onClick={() => handleSelect("composer")}
+              className="w-[60px] h-[60px] rounded-full bg-accent text-base flex items-center justify-center shadow-[0_8px_20px_rgba(176,139,255,0.4)] transition-transform hover:scale-105 active:scale-95 border-4 border-[#121215]"
+            >
+              <PenSquare size={26} className="text-white" />
+            </button>
+          </div>
+
+          {/* Right Items */}
+          <div className="flex items-center justify-evenly w-[40%]">
+            <button
+              onClick={() => handleSelect("scheduler")}
+              className={`flex flex-col items-center justify-center w-full h-full gap-1.5 transition-colors ${
+                active === "scheduler" ? "text-white" : "text-muted"
+              }`}
+            >
+              <CalendarClock size={22} className={active === "scheduler" ? "drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]" : ""} />
+              <span className="text-[10px] font-medium tracking-wide">History</span>
+            </button>
+            <button
+              onClick={() => setShowMore(!showMore)}
+              className={`flex flex-col items-center justify-center w-full h-full gap-1.5 transition-colors ${
+                showMore ? "text-white" : "text-muted"
+              }`}
+            >
+              {showMore ? <X size={22} /> : <Menu size={22} />}
+              <span className="text-[10px] font-medium tracking-wide">More</span>
+            </button>
+          </div>
+        </nav>
+      </div>
     </>
   );
 }
