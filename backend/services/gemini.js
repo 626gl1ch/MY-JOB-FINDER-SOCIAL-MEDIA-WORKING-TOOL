@@ -1,8 +1,5 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
-
 const AI_POLICY = `
 CRITICAL SAFETY & PROHIBITED USE POLICY:
 Do not engage in dangerous or illegal activities, or otherwise violate applicable law or regulations. This includes generating or distributing content that:
@@ -12,7 +9,14 @@ Do not engage in sexually explicit, violent, hateful, or harmful activities. Thi
 Do not engage in misinformation, misrepresentation, or misleading activities. This includes: Frauds, scams, or other deceptive actions. Impersonating an individual (living or dead) without explicit disclosure, in order to deceive. Facilitating misleading claims of expertise or capability in sensitive areas. Facilitating misleading claims related to governmental or democratic processes or harmful health practices, in order to deceive. Misrepresenting the provenance of generated content by claiming it was created solely by a human, in order to deceive.
 `;
 
-function getModel(systemInstruction) {
+function getModel(systemInstruction, req) {
+  const apiKey = req?.headers?.['x-gemini-key'] || process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    throw new Error("Missing Gemini API Key in request headers or environment variables.");
+  }
+  const genAI = new GoogleGenerativeAI(apiKey);
+  const MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+
   return genAI.getGenerativeModel({
     model: MODEL,
     systemInstruction: systemInstruction + "\n\n" + AI_POLICY,
@@ -22,12 +26,13 @@ function getModel(systemInstruction) {
 /**
  * Free-form chat with the assistant. Keeps the last N turns as history.
  */
-async function chat(history, message) {
+async function chat(req, history, message) {
   const model = getModel(
     "You are the in-app assistant for Glitch Broadcast, a social media " +
       "command center for Glitch EnterPrice (a solo dev/trader brand). " +
       "Be direct, concise, and practical. Help with content ideas, captions, " +
-      "scheduling strategy, and general social media questions."
+      "scheduling strategy, and general social media questions.",
+    req
   );
 
   const chatSession = model.startChat({
@@ -45,12 +50,13 @@ async function chat(history, message) {
  * Turn one raw idea into platform-specific variants.
  * platforms: array like ["facebook_page", "instagram", "linkedin", "facebook_group"]
  */
-async function generateVariants(baseContent, platforms, brandVoiceNotes = "") {
+async function generateVariants(req, baseContent, platforms, brandVoiceNotes = "") {
   const model = getModel(
     "You write social media posts for Glitch EnterPrice, a Nigeria-based " +
       "solo developer / algo-trading brand. Voice: direct, confident, " +
       "technically credible, no fluff, no fake hype. " +
-      (brandVoiceNotes ? `Extra brand notes: ${brandVoiceNotes}` : "")
+      (brandVoiceNotes ? `Extra brand notes: ${brandVoiceNotes}` : ""),
+    req
   );
 
   const platformRules = {
@@ -96,8 +102,8 @@ ${requested}
 /**
  * Generate alt text for an uploaded image (image passed as base64).
  */
-async function generateAltText(base64Data, mimeType) {
-  const model = getModel("You write concise, accurate accessibility alt text for images.");
+async function generateAltText(req, base64Data, mimeType) {
+  const model = getModel("You write concise, accurate accessibility alt text for images.", req);
   const result = await model.generateContent([
     { inlineData: { data: base64Data, mimeType } },
     { text: "Write a one-sentence accessibility alt text for this image. No preamble." },
@@ -108,9 +114,10 @@ async function generateAltText(base64Data, mimeType) {
 /**
  * Suggest the best posting time based on simple historical stats.
  */
-async function suggestBestTime(engagementSummary) {
+async function suggestBestTime(req, engagementSummary) {
   const model = getModel(
-    "You analyze social media engagement patterns and give a short, direct recommendation."
+    "You analyze social media engagement patterns and give a short, direct recommendation.",
+    req
   );
   const result = await model.generateContent(
     `Given this engagement summary: ${JSON.stringify(engagementSummary)}, ` +

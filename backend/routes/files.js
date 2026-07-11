@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const supabase = require("../services/supabase");
+const { getSupabase } = require("../services/supabase");
 const gemini = require("../services/gemini");
 
 // List content vault items, optionally filtered by folder
 router.get("/", async (req, res) => {
+  const supabase = getSupabase(req);
   const { folder } = req.query;
   let query = supabase.from("content_items").select("*").order("created_at", { ascending: false });
   if (folder) query = query.eq("folder", folder);
@@ -16,6 +17,7 @@ router.get("/", async (req, res) => {
 
 // Upload a file to Supabase Storage and register it in content_items
 router.post("/upload", async (req, res) => {
+  const supabase = getSupabase(req);
   if (!req.files || !req.files.file) {
     return res.status(400).json({ error: "No file uploaded" });
   }
@@ -40,7 +42,7 @@ router.post("/upload", async (req, res) => {
     let altText = null;
     if (file.mimetype.startsWith("image/")) {
       try {
-        altText = await gemini.generateAltText(file.data.toString("base64"), file.mimetype);
+        altText = await gemini.generateAltText(req, file.data.toString("base64"), file.mimetype);
       } catch (_) {
         // alt text generation is best-effort, don't block the upload on it
       }
@@ -66,6 +68,7 @@ router.post("/upload", async (req, res) => {
 });
 
 router.delete("/:id", async (req, res) => {
+  const supabase = getSupabase(req);
   const { error } = await supabase.from("content_items").delete().eq("id", req.params.id);
   if (error) return res.status(500).json({ error: error.message });
   res.json({ success: true });

@@ -2,10 +2,31 @@ const getBaseUrl = () => {
   return localStorage.getItem("backendUrl") || import.meta.env.VITE_API_URL || "http://localhost:8787/api";
 };
 
+const getAppKeys = () => {
+  try {
+    return JSON.parse(localStorage.getItem("glitch_keys") || "{}");
+  } catch(e) {
+    return {};
+  }
+};
+
 async function req(path, options = {}) {
   const BASE = getBaseUrl();
+  const keys = getAppKeys();
+  
+  // Format keys as standard HTTP headers
+  const headers = { 
+    "Content-Type": "application/json",
+    "x-supabase-url": keys.SUPABASE_URL || "",
+    "x-supabase-key": keys.SUPABASE_SERVICE_ROLE_KEY || "",
+    "x-gemini-key": keys.GEMINI_API_KEY || "",
+    "x-meta-page-token": keys.META_PAGE_ACCESS_TOKEN || "",
+    "x-meta-ig-id": keys.META_IG_BUSINESS_ACCOUNT_ID || "",
+    "x-linkedin-token": keys.LINKEDIN_ACCESS_TOKEN || ""
+  };
+
   const res = await fetch(`${BASE}${path}`, {
-    headers: { "Content-Type": "application/json" },
+    headers: { ...headers, ...(options.headers || {}) },
     ...options,
   });
   if (!res.ok) {
@@ -46,9 +67,22 @@ export const api = {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("folder", folder);
+    
     const BASE = getBaseUrl();
+    const keys = getAppKeys();
+    
+    const headers = {
+      "x-supabase-url": keys.SUPABASE_URL || "",
+      "x-supabase-key": keys.SUPABASE_SERVICE_ROLE_KEY || "",
+      "x-gemini-key": keys.GEMINI_API_KEY || "",
+      "x-meta-page-token": keys.META_PAGE_ACCESS_TOKEN || "",
+      "x-meta-ig-id": keys.META_IG_BUSINESS_ACCOUNT_ID || "",
+      "x-linkedin-token": keys.LINKEDIN_ACCESS_TOKEN || ""
+    };
+
     const res = await fetch(`${BASE}/files/upload`, {
       method: "POST",
+      headers,
       body: formData,
     });
     if (!res.ok) {
@@ -62,9 +96,4 @@ export const api = {
   schedulePost: (postId, scheduledFor) =>
     req(`/schedule/${postId}`, { method: "POST", body: JSON.stringify({ scheduledFor }) }),
   getCalendar: (from, to) => req(`/schedule/calendar?from=${from || ""}&to=${to || ""}`),
-
-  // Settings
-  getSettingsEnv: () => req("/settings/env"),
-  updateSettingsEnv: (payload) =>
-    req("/settings/env", { method: "POST", body: JSON.stringify(payload) }),
 };

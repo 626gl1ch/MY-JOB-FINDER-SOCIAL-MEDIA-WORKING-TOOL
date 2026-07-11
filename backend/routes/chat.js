@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const gemini = require("../services/gemini");
-const supabase = require("../services/supabase");
+const { getSupabase } = require("../services/supabase");
 
 // GET last 50 messages
 router.get("/", async (req, res) => {
+  const supabase = getSupabase(req);
   const { data, error } = await supabase
     .from("chat_messages")
     .select("*")
@@ -16,6 +17,7 @@ router.get("/", async (req, res) => {
 
 // POST a new message, get the assistant's reply
 router.post("/", async (req, res) => {
+  const supabase = getSupabase(req);
   const { message } = req.body;
   if (!message) return res.status(400).json({ error: "message is required" });
 
@@ -26,7 +28,7 @@ router.post("/", async (req, res) => {
       .order("created_at", { ascending: true })
       .limit(20);
 
-    const reply = await gemini.chat(history || [], message);
+    const reply = await gemini.chat(req, history || [], message);
 
     await supabase.from("chat_messages").insert([
       { role: "user", content: message },

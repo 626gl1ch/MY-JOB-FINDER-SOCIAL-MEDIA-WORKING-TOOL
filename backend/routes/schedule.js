@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const supabase = require("../services/supabase");
+const { getSupabase } = require("../services/supabase");
 
 // Schedule a post for a future time
 router.post("/:postId", async (req, res) => {
+  const supabase = getSupabase(req);
   const { postId } = req.params;
   const { scheduledFor } = req.body;
   if (!scheduledFor) return res.status(400).json({ error: "scheduledFor is required" });
@@ -21,6 +22,7 @@ router.post("/:postId", async (req, res) => {
 
 // Calendar view: everything scheduled between two dates
 router.get("/calendar", async (req, res) => {
+  const supabase = getSupabase(req);
   const { from, to } = req.query;
   let query = supabase
     .from("posts")

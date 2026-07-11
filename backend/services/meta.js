@@ -7,9 +7,9 @@ const GRAPH = "https://graph.facebook.com/v21.0";
  * This uses the official Graph API — works only for Pages you manage,
  * NOT for Groups (Meta restricts Group posting via API).
  */
-async function postToFacebookPage({ message, imageUrl }) {
-  const pageId = process.env.META_PAGE_ID;
-  const token = process.env.META_PAGE_ACCESS_TOKEN;
+async function postToFacebookPage(req, { message, imageUrl }) {
+  const pageId = req.headers['x-meta-page-id'] || process.env.META_PAGE_ID;
+  const token = req.headers['x-meta-page-token'] || process.env.META_PAGE_ACCESS_TOKEN;
 
   if (imageUrl) {
     const { data } = await axios.post(`${GRAPH}/${pageId}/photos`, {
@@ -32,9 +32,9 @@ async function postToFacebookPage({ message, imageUrl }) {
  * Instagram Graph API requires a two-step publish: create a media
  * container, then publish it.
  */
-async function postToInstagram({ caption, imageUrl, locationId }) {
-  const igUserId = process.env.META_IG_BUSINESS_ACCOUNT_ID;
-  const token = process.env.META_PAGE_ACCESS_TOKEN;
+async function postToInstagram(req, { caption, imageUrl, locationId }) {
+  const igUserId = req.headers['x-meta-ig-id'] || process.env.META_IG_BUSINESS_ACCOUNT_ID;
+  const token = req.headers['x-meta-page-token'] || process.env.META_PAGE_ACCESS_TOKEN;
 
   const containerRes = await axios.post(`${GRAPH}/${igUserId}/media`, {
     image_url: imageUrl,
@@ -56,8 +56,8 @@ async function postToInstagram({ caption, imageUrl, locationId }) {
 /**
  * Search for an Instagram location ID by name (used for location tagging).
  */
-async function searchInstagramLocation(query) {
-  const token = process.env.META_PAGE_ACCESS_TOKEN;
+async function searchInstagramLocation(req, query) {
+  const token = req.headers['x-meta-page-token'] || process.env.META_PAGE_ACCESS_TOKEN;
   const { data } = await axios.get(`${GRAPH}/search`, {
     params: { type: "place", q: query, access_token: token },
   });

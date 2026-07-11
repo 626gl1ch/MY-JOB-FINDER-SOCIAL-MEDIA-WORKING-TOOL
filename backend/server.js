@@ -25,7 +25,7 @@ app.use("/api/publish", publishRoutes);
 app.use("/api/groups", groupsRoutes);
 app.use("/api/files", filesRoutes);
 app.use("/api/schedule", scheduleRoutes);
-app.use("/api/settings", require("./routes/settings"));
+
 
 const PORT = process.env.PORT || 8787;
 app.listen(PORT, () => {

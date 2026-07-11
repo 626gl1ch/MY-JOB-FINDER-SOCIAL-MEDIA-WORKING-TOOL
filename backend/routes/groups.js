@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const supabase = require("../services/supabase");
+const { getSupabase } = require("../services/supabase");
 const { assistedPostToGroup } = require("../services/puppeteerPoster");
 
 // Add a variant to the assisted posting queue for a specific group
 router.post("/queue", async (req, res) => {
+  const supabase = getSupabase(req);
   const { variantId, groupUrl } = req.body;
   if (!variantId || !groupUrl) {
     return res.status(400).json({ error: "variantId and groupUrl are required" });
@@ -22,6 +23,7 @@ router.post("/queue", async (req, res) => {
 
 // View the current queue
 router.get("/queue", async (req, res) => {
+  const supabase = getSupabase(req);
   const { data, error } = await supabase
     .from("assisted_posting_queue")
     .select("*, post_variants(*)")
@@ -33,6 +35,7 @@ router.get("/queue", async (req, res) => {
 // Run the next queued item: opens a visible browser window,
 // fills in the post, and waits for you to click Post yourself.
 router.post("/queue/:id/run", async (req, res) => {
+  const supabase = getSupabase(req);
   const { id } = req.params;
   const { imagePath } = req.body;
 
@@ -73,6 +76,7 @@ router.post("/queue/:id/run", async (req, res) => {
 
 // Mark an item as done once you've clicked Post in the browser yourself
 router.post("/queue/:id/confirm", async (req, res) => {
+  const supabase = getSupabase(req);
   const { id } = req.params;
   const { data, error } = await supabase
     .from("assisted_posting_queue")

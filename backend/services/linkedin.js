@@ -7,9 +7,9 @@ const API = "https://api.linkedin.com/v2";
  * using the official UGC Posts API. Requires an approved LinkedIn app
  * with the w_member_social scope.
  */
-async function postToLinkedIn({ text, imageAssetUrn }) {
-  const token = process.env.LINKEDIN_ACCESS_TOKEN;
-  const authorUrn = process.env.LINKEDIN_PERSON_URN; // e.g. "urn:li:person:XXXXXXX"
+async function postToLinkedIn(req, { text, imageAssetUrn }) {
+  const token = req.headers['x-linkedin-token'] || process.env.LINKEDIN_ACCESS_TOKEN;
+  const authorUrn = req.headers['x-linkedin-urn'] || process.env.LINKEDIN_PERSON_URN; // e.g. "urn:li:person:XXXXXXX"
 
   const body = {
     author: authorUrn,

@@ -1,11 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const supabase = require("../services/supabase");
+const { getSupabase } = require("../services/supabase");
 const meta = require("../services/meta");
 const linkedin = require("../services/linkedin");
 
 // Publish a single variant via its platform's official API
 router.post("/:variantId", async (req, res) => {
+  const supabase = getSupabase(req);
   const { variantId } = req.params;
   const { imageUrl } = req.body;
 
@@ -24,17 +25,17 @@ router.post("/:variantId", async (req, res) => {
 
     switch (variant.platform) {
       case "facebook_page":
-        result = await meta.postToFacebookPage({ message: fullText, imageUrl });
+        result = await meta.postToFacebookPage(req, { message: fullText, imageUrl });
         break;
       case "instagram":
-        result = await meta.postToInstagram({
+        result = await meta.postToInstagram(req, {
           caption: fullText,
           imageUrl,
           locationId: variant.location_tag,
         });
         break;
       case "linkedin":
-        result = await linkedin.postToLinkedIn({ text: fullText });
+        result = await linkedin.postToLinkedIn(req, { text: fullText });
         break;
       case "facebook_group":
         return res.status(400).json({

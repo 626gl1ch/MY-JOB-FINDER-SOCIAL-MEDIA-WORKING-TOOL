@@ -36,9 +36,13 @@ export default function Settings() {
   const [envMessage, setEnvMessage] = useState(null);
 
   useEffect(() => {
-    api.getSettingsEnv()
-      .then(data => setEnvValues(data || {}))
-      .catch(err => console.error("Failed to load envs:", err));
+    try {
+      const keys = JSON.parse(localStorage.getItem("glitch_keys") || "{}");
+      setEnvValues(keys);
+    } catch (err) {
+      console.error("Failed to load local keys:", err);
+      setEnvValues({});
+    }
   }, []);
 
   const saveBackendUrl = () => {
@@ -58,8 +62,8 @@ export default function Settings() {
     setIsSavingEnv(true);
     setEnvMessage(null);
     try {
-      await api.updateSettingsEnv(envValues);
-      setEnvMessage({ type: "success", text: "Saved successfully. Backend restarting..." });
+      localStorage.setItem("glitch_keys", JSON.stringify(envValues));
+      setEnvMessage({ type: "success", text: "Saved successfully to local device." });
       setTimeout(() => setEnvMessage(null), 3000);
     } catch (error) {
       setEnvMessage({ type: "error", text: "Failed to save: " + error.message });
@@ -96,7 +100,7 @@ export default function Settings() {
             Connections & Diagnostics
           </h1>
           <p className="text-muted text-[13px] mt-1.5 font-light leading-relaxed">
-            Configure keys and variables via the local backend's <code className="font-mono text-accent font-bold tracking-widest bg-accent/10 px-1.5 py-0.5 rounded">.env</code> file.
+            Keys are now stored securely on your local device and sent directly per-request.
           </p>
         </div>
 
@@ -169,7 +173,7 @@ export default function Settings() {
                 className="flex items-center gap-2 text-xs font-bold text-accent bg-accent/10 px-4 py-2.5 rounded-full hover:bg-accent/20 transition-all disabled:opacity-50"
               >
                 {isSavingEnv ? <RefreshCw size={14} className="animate-spin" /> : <Save size={14} />}
-                Save to Backend
+                Save to Device
               </button>
             </div>
           </div>

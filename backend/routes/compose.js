@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const gemini = require("../services/gemini");
-const supabase = require("../services/supabase");
+const { getSupabase } = require("../services/supabase");
 
 // Create a post idea + generate platform variants in one call
 router.post("/generate", async (req, res) => {
+  const supabase = getSupabase(req);
   const { title, baseContent, platforms, brandVoiceNotes } = req.body;
   if (!baseContent || !platforms?.length) {
     return res.status(400).json({ error: "baseContent and platforms[] are required" });
@@ -18,7 +19,7 @@ router.post("/generate", async (req, res) => {
       .single();
     if (postErr) throw postErr;
 
-    const { variants } = await gemini.generateVariants(baseContent, platforms, brandVoiceNotes);
+    const { variants } = await gemini.generateVariants(req, baseContent, platforms, brandVoiceNotes);
 
     const rows = variants.map((v) => ({
       post_id: post.id,
@@ -41,6 +42,7 @@ router.post("/generate", async (req, res) => {
 
 // List all posts with their variants
 router.get("/", async (req, res) => {
+  const supabase = getSupabase(req);
   const { data: posts, error } = await supabase
     .from("posts")
     .select("*, post_variants(*)")
@@ -51,6 +53,7 @@ router.get("/", async (req, res) => {
 
 // Edit a single variant's content before publishing
 router.patch("/variant/:id", async (req, res) => {
+  const supabase = getSupabase(req);
   const { id } = req.params;
   const { content, hashtags, target_group_name, target_group_url, location_tag } = req.body;
 

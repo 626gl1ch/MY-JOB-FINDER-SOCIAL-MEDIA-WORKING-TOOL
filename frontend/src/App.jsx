@@ -28,10 +28,13 @@ export default function App() {
 
   return (
     <div className="flex h-screen bg-transparent overflow-hidden relative">
+      <div className="fixed inset-0 z-[-1]" style={{ backgroundImage: 'var(--bg-gradient)' }} />
       <TermsModal />
       <Sidebar active={active} onChange={setActive} />
-      <main className="flex-1 overflow-y-auto scrollbar-thin pb-28 md:pb-0">
-        <View />
+      <main className="flex-1 overflow-y-auto scrollbar-thin pb-28 md:pb-0" style={{ WebkitOverflowScrolling: 'touch' }}>
+        <div key={active} className="page-transition min-h-full">
+          <View />
+        </div>
       </main>
       <MobileNav active={active} onChange={setActive} />
     </div>
