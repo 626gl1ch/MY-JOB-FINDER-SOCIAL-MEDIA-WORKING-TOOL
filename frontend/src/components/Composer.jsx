@@ -17,6 +17,7 @@ import {
   Settings as SettingsIcon
 } from "lucide-react";
 import { api } from "../api";
+import { checkUsageLimit, incrementUsageCount } from "../utils/usage";
 
 const PLATFORMS = [
   { id: "facebook_page", label: "FB Page", icon: Facebook, maxChar: 5000, desc: "Conversational, engaging" },
@@ -52,6 +53,10 @@ export default function Composer() {
   };
 
   const generate = async () => {
+    if (checkUsageLimit()) {
+      window.dispatchEvent(new Event("glitch-usage-change"));
+      return;
+    }
     if (!baseContent.trim() || selectedPlatforms.length === 0) return;
     setGenerating(true);
     
@@ -73,6 +78,7 @@ export default function Composer() {
         });
       });
       setVariants(result.variants);
+      incrementUsageCount();
     } catch (err) {
       console.warn("Gemini API failed, using local mock generator fallback:", err.message);
       alert(`Warning: Gemini API offline or invalid key (${err.message}). Using offline mock generator fallback.`);
@@ -102,6 +108,10 @@ export default function Composer() {
   };
 
   const publish = async (variant) => {
+    if (checkUsageLimit()) {
+      window.dispatchEvent(new Event("glitch-usage-change"));
+      return;
+    }
     try {
       if (variant.platform === "facebook_group") {
         if (!groupUrl.trim()) return alert("Please specify the target Facebook Group URL first.");
@@ -111,6 +121,7 @@ export default function Composer() {
         await api.publishVariant(variant.id, attachedImage?.url);
         alert(`Successfully published to ${variant.platform}!`);
       }
+      incrementUsageCount();
     } catch (err) {
       alert(`Publish failed: ${err.message}`);
     }

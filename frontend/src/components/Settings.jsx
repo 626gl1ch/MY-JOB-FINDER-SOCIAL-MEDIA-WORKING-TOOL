@@ -14,8 +14,12 @@ import {
   Terminal,
   Info,
   ShieldAlert,
-  Save
+  Save,
+  CreditCard,
+  Lock,
+  Unlock
 } from "lucide-react";
+import { getUsageCount, isSubscribed, isAdmin, setSubscribed, setAdmin } from "../utils/usage";
 import { api } from "../api";
 
 const CONNECTIONS = [
@@ -24,7 +28,8 @@ const CONNECTIONS = [
   { key: "li", label: "LinkedIn Access Token", icon: Linkedin, env: "LINKEDIN_ACCESS_TOKEN", desc: "Allows automated updates on LinkedIn Profile." },
   { key: "gemini", label: "Gemini AI Key", icon: KeyRound, env: "GEMINI_API_KEY", desc: "Powers post variations, alt text, and ideas chat." },
   { key: "supabase", label: "Supabase DB URL", icon: Database, env: "SUPABASE_URL", desc: "Connects local backend to database tables." },
-  { key: "supabase_key", label: "Supabase Service Key", icon: Database, env: "SUPABASE_SERVICE_ROLE_KEY", desc: "Allows backend DB operations." }
+  { key: "supabase_key", label: "Supabase Service Key", icon: Database, env: "SUPABASE_SERVICE_ROLE_KEY", desc: "Allows backend DB operations." },
+  { key: "paystack", label: "Paystack Public Key", icon: CreditCard, env: "PAYSTACK_PUBLIC_KEY", desc: "Powers the premium subscription paywall checkout." }
 ];
 
 export default function Settings() {
@@ -153,6 +158,74 @@ export default function Settings() {
         >
           <span>Reset Terms</span>
         </button>
+      </div>
+
+      {/* Subscription & Paywall Diagnostics Card */}
+      <div className="max-w-6xl mx-auto mb-8 bg-surface rounded-[32px] p-6 md:p-8 border border-white/5 shadow-xl relative z-10 space-y-6">
+        <div>
+          <h3 className="text-base font-bold text-white tracking-tight flex items-center gap-2">
+            <CreditCard size={18} className="text-accent" /> Subscription & Paywall Controls
+          </h3>
+          <p className="text-muted text-xs mt-1">
+            Monitor and override subscription access parameters for diagnostic testing.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-[#121215] p-5 rounded-2xl border border-white/5 space-y-1">
+            <span className="text-[10px] uppercase font-mono text-muted">License Status</span>
+            <p className="text-sm font-bold text-white flex items-center gap-2 mt-1">
+              {isAdmin() ? (
+                <>
+                  <Unlock size={16} className="text-[#43FFB0]" />
+                  <span className="text-[#43FFB0]">Admin Team Bypass</span>
+                </>
+              ) : isSubscribed() ? (
+                <>
+                  <CheckCircle2 size={16} className="text-[#43FFB0]" />
+                  <span className="text-[#43FFB0]">Premium Active</span>
+                </>
+              ) : (
+                <>
+                  <Lock size={16} className="text-alert" />
+                  <span className="text-alert">Free Trial Mode</span>
+                </>
+              )}
+            </p>
+          </div>
+
+          <div className="bg-[#121215] p-5 rounded-2xl border border-white/5 space-y-1">
+            <span className="text-[10px] uppercase font-mono text-muted">Trial Usage Count</span>
+            <p className="text-sm font-bold text-white mt-1">
+              {isSubscribed() ? "Unlimited (Pro)" : `${getUsageCount()} / 3 Actions Used`}
+            </p>
+          </div>
+
+          <div className="flex flex-col justify-center gap-3">
+            <button
+              onClick={() => {
+                localStorage.setItem("glitch_usage_count", "0");
+                window.dispatchEvent(new Event("glitch-usage-change"));
+                alert("Trial usage count successfully reset to 0.");
+              }}
+              className="w-full text-center text-xs font-bold text-[#121215] bg-[#43FFB0] px-4 py-3 rounded-full hover:bg-[#43FFB0]/90 transition-all cursor-pointer active:scale-95"
+            >
+              Reset Free Trial Usage
+            </button>
+            <button
+              onClick={() => {
+                setSubscribed(false);
+                setAdmin(false);
+                localStorage.setItem("glitch_usage_count", "0");
+                window.dispatchEvent(new Event("glitch-usage-change"));
+                alert("License status revoked. Returned to Free Trial (0/3).");
+              }}
+              className="w-full text-center text-xs font-bold text-alert bg-alert/10 px-4 py-3 rounded-full hover:bg-alert/20 transition-all cursor-pointer active:scale-95 border border-alert/20"
+            >
+              Revoke License & Reset
+            </button>
+          </div>
+        </div>
       </div>
 
       <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8 items-start relative z-10">

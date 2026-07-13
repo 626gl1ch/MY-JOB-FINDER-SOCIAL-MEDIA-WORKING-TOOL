@@ -10,6 +10,7 @@ import Scheduler from "./components/Scheduler";
 import GroupsAssisted from "./components/GroupsAssisted";
 import Settings from "./components/Settings";
 import MarketingPlaybook from "./components/MarketingPlaybook";
+import PaywallModal from "./components/PaywallModal";
 
 const VIEWS = {
   dashboard: Dashboard,
@@ -30,6 +31,7 @@ export default function App() {
     <div className="flex h-screen bg-transparent overflow-hidden relative">
       <div className="fixed inset-0 z-[-1]" style={{ backgroundImage: 'var(--bg-gradient)' }} />
       <TermsModal />
+      <PaywallModal />
       <Sidebar active={active} onChange={setActive} />
       <main className="flex-1 overflow-y-auto scrollbar-thin pb-28 md:pb-0" style={{ WebkitOverflowScrolling: 'touch' }}>
         <div key={active} className="page-transition min-h-full">

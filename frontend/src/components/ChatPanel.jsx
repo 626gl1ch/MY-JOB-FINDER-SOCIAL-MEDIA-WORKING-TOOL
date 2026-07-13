@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Send, Sparkles, AlertCircle, HelpCircle, ArrowRight } from "lucide-react";
 import { api } from "../api";
+import { checkUsageLimit, incrementUsageCount } from "../utils/usage";
 
 const SUGGESTIONS = [
   { label: "Brainstorm 5 ideas for a trading bot updates post", prompt: "Give me 5 punchy content ideas explaining my progress building my Bybit crypto trading bot. Focus on stateful executions." },
@@ -30,6 +31,10 @@ export default function ChatPanel() {
   }, [messages]);
 
   const send = async (textToSend) => {
+    if (checkUsageLimit()) {
+      window.dispatchEvent(new Event("glitch-usage-change"));
+      return;
+    }
     const text = textToSend || input;
     if (!text.trim() || loading) return;
     
@@ -48,6 +53,7 @@ export default function ChatPanel() {
         });
       });
       setMessages((m) => [...m, { role: "assistant", content: response.reply }]);
+      incrementUsageCount();
     } catch (err) {
       setMessages((m) => [...m, { role: "assistant", content: `Error: ${err.message}` }]);
     } finally {
