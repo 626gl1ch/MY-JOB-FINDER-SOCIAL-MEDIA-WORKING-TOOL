@@ -13,6 +13,7 @@ import {
   Plus
 } from "lucide-react";
 import { api } from "../api";
+import { checkUsageLimit, incrementUsageCount } from "../utils/usage";
 
 const DAYS_OF_WEEK = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
@@ -239,8 +240,13 @@ export default function Scheduler() {
               </button>
               <button
                 onClick={() => {
+                  if (checkUsageLimit()) {
+                    window.dispatchEvent(new Event("glitch-usage-change"));
+                    return;
+                  }
                   alert("Signal broadcasted instantly!");
                   deleteSchedule(selectedEvent.id);
+                  incrementUsageCount();
                 }}
                 className="w-full sm:w-auto flex items-center justify-center gap-2 text-xs font-bold text-[#121215] bg-accent px-6 py-3.5 rounded-full hover:scale-105 active:scale-95 transition-all shadow-lg"
               >

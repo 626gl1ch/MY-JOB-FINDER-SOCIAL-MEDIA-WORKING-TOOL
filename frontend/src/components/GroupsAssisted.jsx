@@ -11,6 +11,7 @@ import {
   Clock
 } from "lucide-react";
 import { api } from "../api";
+import { checkUsageLimit, incrementUsageCount } from "../utils/usage";
 
 const STATUS_CONFIG = {
   queued: { label: "queued", styles: "bg-white/5 text-muted border-white/5" },
@@ -51,6 +52,10 @@ export default function GroupsAssisted() {
   }, []);
 
   const run = async (id, item) => {
+    if (checkUsageLimit()) {
+      window.dispatchEvent(new Event("glitch-usage-change"));
+      return;
+    }
     setRunningId(id);
     setTerminalLogs([
       `[PROCESS] Initiating assisted posting for Queue ID: ${id}`,
@@ -87,6 +92,7 @@ export default function GroupsAssisted() {
 
     try {
       await api.runGroupPost(id).catch(() => {});
+      incrementUsageCount();
       load();
     } catch (err) {
       setTerminalLogs((prev) => [...prev, `[ERROR] Script failed: ${err.message}`]);

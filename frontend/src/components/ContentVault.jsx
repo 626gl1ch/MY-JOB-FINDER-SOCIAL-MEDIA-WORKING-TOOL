@@ -13,6 +13,7 @@ import {
   Plus
 } from "lucide-react";
 import { api } from "../api";
+import { checkUsageLimit, incrementUsageCount } from "../utils/usage";
 
 const FOLDERS = ["general", "brand-assets", "product-shots", "trading-charts", "drafts"];
 
@@ -90,6 +91,10 @@ export default function ContentVault() {
   };
 
   const generateAltText = (item) => {
+    if (checkUsageLimit()) {
+      window.dispatchEvent(new Event("glitch-usage-change"));
+      return;
+    }
     setGeneratingAltId(item.id);
     // Simulate Gemini generating alt text
     setTimeout(() => {
@@ -103,6 +108,7 @@ export default function ContentVault() {
         return i;
       }));
       setGeneratingAltId(null);
+      incrementUsageCount();
     }, 1500);
   };
 
