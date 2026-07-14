@@ -1,3 +1,5 @@
+import { showInterstitialAd } from "./utils/admob";
+
 const getBaseUrl = () => {
   return localStorage.getItem("backendUrl") || import.meta.env.VITE_API_URL || "http://localhost:8787/api";
 };
@@ -13,12 +15,11 @@ const getAppKeys = () => {
 async function req(path, options = {}) {
   const BASE = getBaseUrl();
   const keys = getAppKeys();
+  const jwt = localStorage.getItem("supabase_jwt");
   
-  // Format keys as standard HTTP headers
   const headers = { 
     "Content-Type": "application/json",
-    "x-supabase-url": keys.SUPABASE_URL || "",
-    "x-supabase-key": keys.SUPABASE_SERVICE_ROLE_KEY || "",
+    "Authorization": jwt ? `Bearer ${jwt}` : "",
     "x-gemini-key": keys.GEMINI_API_KEY || "",
     "x-meta-page-token": keys.META_PAGE_ACCESS_TOKEN || "",
     "x-meta-ig-id": keys.META_IG_BUSINESS_ACCOUNT_ID || "",
@@ -31,6 +32,12 @@ async function req(path, options = {}) {
   });
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
+    
+    // Check if it's a paywall requirement
+    if (res.status === 402 || body.requiresPayment) {
+       window.dispatchEvent(new CustomEvent('show-paywall', { detail: body.error }));
+    }
+    
     throw new Error(body.error || `Request failed: ${res.status}`);
   }
   return res.json();
@@ -42,8 +49,18 @@ export const api = {
   sendChat: (message) => req("/chat", { method: "POST", body: JSON.stringify({ message }) }),
 
   // Compose
-  generateVariants: (payload) =>
-    req("/compose/generate", { method: "POST", body: JSON.stringify(payload) }),
+  getMe: () => req("/me"),
+  generateVariants: async (payload) => {
+    try {
+      const me = await api.getMe();
+      if (me.profile && me.profile.is_trial && me.profile.role !== 'admin') {
+        await showInterstitialAd();
+      }
+    } catch (e) {
+      console.log("Failed to check profile for ads", e);
+    }
+    return req("/compose/generate", { method: "POST", body: JSON.stringify(payload) });
+  },
   listPosts: () => req("/compose"),
   updateVariant: (id, payload) =>
     req(`/compose/variant/${id}`, { method: "PATCH", body: JSON.stringify(payload) }),
@@ -70,10 +87,10 @@ export const api = {
     
     const BASE = getBaseUrl();
     const keys = getAppKeys();
+    const jwt = localStorage.getItem("supabase_jwt");
     
     const headers = {
-      "x-supabase-url": keys.SUPABASE_URL || "",
-      "x-supabase-key": keys.SUPABASE_SERVICE_ROLE_KEY || "",
+      "Authorization": jwt ? `Bearer ${jwt}` : "",
       "x-gemini-key": keys.GEMINI_API_KEY || "",
       "x-meta-page-token": keys.META_PAGE_ACCESS_TOKEN || "",
       "x-meta-ig-id": keys.META_IG_BUSINESS_ACCOUNT_ID || "",

@@ -11,6 +11,7 @@ import GroupsAssisted from "./components/GroupsAssisted";
 import Settings from "./components/Settings";
 import MarketingPlaybook from "./components/MarketingPlaybook";
 import PaywallModal from "./components/PaywallModal";
+import AuthModal from "./components/AuthModal";
 
 const VIEWS = {
   dashboard: Dashboard,
@@ -25,13 +26,15 @@ const VIEWS = {
 
 export default function App() {
   const [active, setActive] = useState("dashboard");
+  const [session, setSession] = useState(null);
   const View = VIEWS[active];
 
   return (
     <div className="flex h-screen bg-transparent overflow-hidden relative">
       <div className="fixed inset-0 z-[-1]" style={{ backgroundImage: 'var(--bg-gradient)' }} />
+      <AuthModal session={session} setSession={setSession} />
       <TermsModal />
-      <PaywallModal />
+      <PaywallModal session={session} />
       <Sidebar active={active} onChange={setActive} />
       <main className="flex-1 overflow-y-auto scrollbar-thin pb-28 md:pb-0" style={{ WebkitOverflowScrolling: 'touch' }}>
         <div key={active} className="page-transition min-h-full">
