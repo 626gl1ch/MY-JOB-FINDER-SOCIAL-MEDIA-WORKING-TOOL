@@ -122,3 +122,17 @@ its free-tier daily quota is very small.
   content types (SnipeJob build-in-public updates, trading insight posts).
 - Wire up analytics pulls from the Graph API and LinkedIn API to replace the
   placeholder stat cards on the Dashboard with real engagement numbers.
+
+## 8. Building the Android APK
+
+This project uses Capacitor to package the React frontend into an Android application. 
+
+To build the APK locally on Windows:
+1. Ensure you have run `npm install` in the frontend directory.
+2. Run the provided PowerShell script from the root of the project:
+   ```powershell
+   .\build_android.ps1
+   ```
+   *(Alternatively, use `.\build_with_java21.ps1` if you need to use the specific JDK 21 toolchain included in the project).*
+3. The script will automatically install necessary SDKs, sync Capacitor, and compile the APK. 
+4. The generated APK will be output to `frontend/android/app/build/outputs/apk/debug/app-debug.apk` (or similar depending on the build type).
